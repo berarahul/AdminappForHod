@@ -1,0 +1,45 @@
+name: attendanceadmin
+description: "A new Flutter project."
+
+publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+
+  cupertino_icons: ^1.0.6
+  get: ^4.6.6
+  get_storage: ^2.1.1
+  connectivity_plus: ^6.0.3
+  iconsax: ^0.0.8
+  http: ^1.2.1
+  snippet_coder_utils: ^1.0.15
+  intl: ^0.19.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^3.0.0
+
+
+flutter:
+  uses-material-design: true
+
+
+  assets:
+    - assets/images/onbordingimages/
+    - assets/icons/LoginIcons/
+    - assets/LOGOS/
+    - assets/icons/dark/
+    - assets/icons/light/
+    - assets/images/developerImage/
+    - assets/images/defaultimage/
+    - assets/images/forsplash/
+
+
