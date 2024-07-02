@@ -1,8 +1,8 @@
 import 'package:attendanceadmin/view/Screens/AdminScreen/AdminScreen.dart';
 import 'package:attendanceadmin/view/Screens/AdminScreen/Widgets/StudentCard/StudentScreen.dart';
 
-import 'package:attendanceadmin/view/Screens/AdminScreen/Widgets/SubjectsCard.dart';
-import 'package:attendanceadmin/view/Screens/AdminScreen/Widgets/TeacherCard.dart';
+import 'package:attendanceadmin/view/Screens/AdminScreen/Widgets/SubjectCard/SubjectScreen.dart';
+import 'package:attendanceadmin/view/Screens/AdminScreen/Widgets/TeacherCard/TeacherScreen.dart';
 import 'package:attendanceadmin/view/Screens/Login/Login_Screen.dart';
 import 'package:attendanceadmin/viewmodel/service/theme/Apptheme.dart';
 import 'package:flutter/material.dart';

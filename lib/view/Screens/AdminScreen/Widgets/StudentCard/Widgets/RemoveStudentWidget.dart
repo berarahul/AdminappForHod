@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../../constant/AppColors.dart';
-import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/RemoveStudentController.dart';
+import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/remove/RemoveStudentController.dart';
 
 class RemoveStudentModal extends StatelessWidget {
   final RemoveStudentController controller = Get.put(RemoveStudentController());

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/UpdateStudentController.dart';
+import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/update/UpdateStudentController.dart';
  // Import your actual path
 
 class UpdateStudentModal extends StatelessWidget {
