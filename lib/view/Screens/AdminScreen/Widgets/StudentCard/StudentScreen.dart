@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:attendanceadmin/constant/AppColors.dart';
-import '../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/StudentCardController.dart';
+import '../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/StudentScreenController.dart';
 import 'Widgets/AddStudentWidget.dart';
 import 'Widgets/RemoveStudentFromLastSemWidget.dart';
 import 'Widgets/RemoveStudentWidget.dart';
@@ -57,12 +57,16 @@ class StudentActionsScreen extends StatelessWidget {
 
   void _handleAction(BuildContext context, String action) {
     if (action == 'Add Student') {
+      controller.addStudent();
       _showAddStudentModal(context);
     } else if (action == 'Remove Student') {
+      controller.removeStudent();
       _showRemoveStudentModal(context);
     } else if (action == 'Update Student') {
+      controller.updateStudent();
       _showUpdateStudentModal(context);
     } else if (action == 'Remove student from last sem') {
+      controller.removeStudentFromLastSem();
       _showRemoveStudentFromLastSemModal(context);
     }
   }

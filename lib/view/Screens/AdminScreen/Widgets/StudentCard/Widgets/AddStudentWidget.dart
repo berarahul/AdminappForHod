@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../../constant/AppColors.dart';
-import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/AddStudentWidgetController.dart';
+import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/add/AddStudentWidgetController.dart';
 
 class AddStudentModal extends StatelessWidget {
   final AddStudentController controller = Get.put(AddStudentController());

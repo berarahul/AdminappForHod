@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 
-import 'Widgets/TeacherCard.dart';
+import 'Widgets/TeacherCard/TeacherScreen.dart';
 
 class AdminScreen extends StatelessWidget {
   final List<String> buttonNames = [

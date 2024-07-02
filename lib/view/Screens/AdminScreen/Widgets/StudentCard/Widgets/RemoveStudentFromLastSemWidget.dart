@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/removelastsemController.dart';
+import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/last_sem_student_remove/removelastsemController.dart';
 
 class Removestudentfromlastsemwidget extends StatelessWidget {
   final RemoveStudentControllerFromLastSem controller = Get.put(RemoveStudentControllerFromLastSem());
