@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +23,10 @@ class MyApp extends StatelessWidget {
         GetPage(name: '/student', page: () => StudentActionsScreen()),
         GetPage(name: '/teacher', page: () => TeacherActionsScreen()),
         GetPage(name: '/login', page: () => LoginScreen()),
-        GetPage(name: '/subject', page: () => SubjectActionsScreen()), // Add the new screen route
+        GetPage(
+          name: '/subject',
+          page: () => const SubjectActionsScreen(),
+        ), // Add the new screen route
 
         // Add other pages here
       ],

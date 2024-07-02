@@ -8,7 +8,8 @@ class InternetConnectionController extends GetxController {
   @override
   void onInit() {
     super.onInit();
-    _internetConnection.onConnectivityChanged.listen((List<ConnectivityResult> results) {
+    _internetConnection.onConnectivityChanged
+        .listen((List<ConnectivityResult> results) {
       // Check if the results list is not empty
       if (results.isNotEmpty) {
         // Call internetStatus with the first result in the list
