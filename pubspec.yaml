@@ -1,16 +1,14 @@
 name: attendanceadmin
 description: "A new Flutter project."
 
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 environment:
-  sdk: '>=3.4.0 <4.0.0'
-
+  sdk: ">=3.4.0 <4.0.0"
 
 dependencies:
   flutter:
     sdk: flutter
-
 
   cupertino_icons: ^1.0.6
   get: ^4.6.6
@@ -28,10 +26,8 @@ dev_dependencies:
 
   flutter_lints: ^3.0.0
 
-
 flutter:
   uses-material-design: true
-
 
   assets:
     - assets/images/onbordingimages/
@@ -42,5 +38,3 @@ flutter:
     - assets/images/developerImage/
     - assets/images/defaultimage/
     - assets/images/forsplash/
-
-
