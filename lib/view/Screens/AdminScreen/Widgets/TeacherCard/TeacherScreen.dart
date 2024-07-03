@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:attendanceadmin/constant/AppColors.dart';
+import '../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/TeacherScreenController.dart';
+import 'Widgets/AddTeacherWidget.dart';
+import 'Widgets/RemoveTeacherWidget.dart';
 
-class TeacherActionsScreen extends StatelessWidget {
-  final List<String> actions = [
-    'Add teacher',
-    'Remove Teacher',
-    'Update teacher',
-  ];
+
+class TeacherActionScreen extends StatelessWidget {
+  TeacherController teacherController=Get.put(TeacherController());
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +18,7 @@ class TeacherActionsScreen extends StatelessWidget {
       ),
       body: Container(
         padding: const EdgeInsets.all(16.0),
-        color: Colors.green,
+        color: Colors.orange,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -30,28 +31,106 @@ class TeacherActionsScreen extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             Expanded(
-              child: ListView.builder(
-                itemCount: actions.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 8.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        // Define actions for each item tap here
-                      },
-                      child: Text(
-                        actions[index],
-                        style: const TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.normal,
-                        ),
+              child: Obx(() {
+                return ListView.builder(
+                  itemCount: teacherController.actions.length,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 8.0),
+                      child: StudentActionWidget(
+                        actionText: teacherController.actions[index],
+                        onTap: () {
+                          _handleAction(context, teacherController.actions[index]);
+                        },
                       ),
-                    ),
-                  );
-                },
-              ),
+                    );
+                  },
+                );
+              }),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  void _handleAction(BuildContext context, String action) {
+    if (action == 'Add Teacher') {
+      teacherController.addTeacher();
+      _showAddTeacherModal(context);
+    } else if (action == 'Remove Teacher') {
+      teacherController.removeTeacher();
+      _showRemoveTeacherModal(context);
+    } else if (action == 'Update Teacher') {
+      teacherController.updateTeacher();
+      _showRemoveTeacherModal(context);
+    }
+  }
+
+  void _showAddTeacherModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: AddTeacherModel(),
+      ),
+    );
+  }
+
+
+
+  void _showRemoveTeacherModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        child: RemoveTeacherScreen(),
+      ),
+    );
+  }
+}
+
+
+void _showUpdateSubjectModal(BuildContext context) {
+  showModalBottomSheet(
+    context: context,
+    isScrollControlled: true,
+    builder: (context) => Padding(
+      padding: EdgeInsets.only(
+        bottom: MediaQuery.of(context).viewInsets.bottom,
+      ),
+      // child: UpdateSubjectModal(),
+    ),
+  );
+}
+
+class StudentActionWidget extends StatelessWidget {
+  final String actionText;
+  final VoidCallback onTap;
+
+  const StudentActionWidget({
+    required this.actionText,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+        child: Text(
+          actionText,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.normal,
+          ),
         ),
       ),
     );
