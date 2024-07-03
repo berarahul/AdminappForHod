@@ -134,7 +134,7 @@ class AuthService {
               : <String>[];  // Default empty list if authorities field is missing or not a string
 
           // Check if the token contains required authorities
-          if (authorities.contains('TEACHER') || authorities.contains('HOD')) {
+          if (authorities.contains('TEACHER') && authorities.contains('HOD')) {
             // Convert the decoded payload to UserModel
             final userModel = UserModel.fromJson(payload);
 
