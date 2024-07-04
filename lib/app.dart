@@ -7,13 +7,14 @@ import 'package:attendanceadmin/viewmodel/service/LoginService/AuthServices.dart
 import 'package:attendanceadmin/viewmodel/service/theme/Apptheme.dart';
 
 class MyApp extends StatelessWidget {
-  MyApp({Key? key}) : super(key: key);
+  MyApp({super.key});
 
   final AuthService authService = Get.put(AuthService());
 
   @override
   Widget build(BuildContext context) {
-    bool isLoggedIn = authService.isLoggedIn(); // This is a local boolean variable
+    bool isLoggedIn =
+        authService.isLoggedIn(); // This is a local boolean variable
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
@@ -21,9 +22,8 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       // initialRoute: AppRoutes.login,
-     home: isLoggedIn?AdminScreen():LoginScreen(),
+      home: isLoggedIn ? const AdminScreen() : LoginScreen(),
       getPages: AppRoutes.routes,
     );
   }
 }
-
