@@ -109,6 +109,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../constant/routes/approutes.dart';
 import '../../../viewmodel/service/LoginService/AuthServices.dart';
 import 'Widgets/TeacherCard/TeacherScreen.dart';
 
@@ -122,6 +123,7 @@ class AdminScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: Colors.blueAccent,
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         backgroundColor: AppColors.appcolor,
         title: const Center(child: Text('Admin')),
       ),
@@ -154,11 +156,11 @@ class AdminScreen extends StatelessWidget {
                       title: buttonNames[index],
                       onTap: () {
                         if (buttonNames[index] == 'Student') {
-                          Get.toNamed('/student');
+                          Get.toNamed(AppRoutes.student);
                         } else if (buttonNames[index] == 'Teacher') {
-                          Get.toNamed('/teacher');
+                          Get.toNamed(AppRoutes.teacher);
                         } else if (buttonNames[index] == 'Subject') {
-                          Get.toNamed('/subject');
+                          Get.toNamed(AppRoutes.subject);
                         }
                         // Define other actions for other buttons here
                       },

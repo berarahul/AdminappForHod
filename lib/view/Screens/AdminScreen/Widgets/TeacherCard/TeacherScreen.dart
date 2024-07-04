@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:attendanceadmin/constant/AppColors.dart';
+import '../../../../../sampleUI.dart';
 import '../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/TeacherScreenController.dart';
 import 'Widgets/AddTeacherWidget.dart';
 import 'Widgets/RemoveTeacherWidget.dart';
@@ -63,7 +64,7 @@ class TeacherActionScreen extends StatelessWidget {
       _showRemoveTeacherModal(context);
     } else if (action == 'Update Teacher') {
       teacherController.updateTeacher();
-      _showRemoveTeacherModal(context);
+      _showUpdateTeacherModal(context);
     }
   }
 
@@ -97,7 +98,7 @@ class TeacherActionScreen extends StatelessWidget {
 }
 
 
-void _showUpdateSubjectModal(BuildContext context) {
+void _showUpdateTeacherModal(BuildContext context) {
   showModalBottomSheet(
     context: context,
     isScrollControlled: true,
@@ -105,7 +106,7 @@ void _showUpdateSubjectModal(BuildContext context) {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      // child: UpdateSubjectModal(),
+      child: TeacherUpdateScreen(),
     ),
   );
 }

@@ -139,7 +139,8 @@ class AuthService {
             final userModel = UserModel.fromJson(payload);
 
             await storage.write('token', token);
-            await storage.write('userModel', userModel.toJson()); // store UserModel as JSON
+            await storage.write('userModel', userModel.toJson());
+            print("sucess");// store UserModel as JSON
 
             return userModel;
           } else {
@@ -157,10 +158,14 @@ class AuthService {
     }
   }
 
-  bool isLoggedIn() {
-    String? token = storage.read('token');
-    return token != null;
-  }
+  bool isLoggedIn()  {
+     String? token = storage.read('token');
+    if (token != null) {
+       return true;
+    } else {
+      return false;
+    }
+   }
 
   String? getToken() {
     return storage.read('token');
@@ -180,3 +185,6 @@ class AuthService {
     await storage.erase();
   }
 }
+
+
+
