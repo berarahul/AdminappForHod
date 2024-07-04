@@ -16,4 +16,7 @@ class StudentCardApi {
   static const String departmentListEndPoint = "dept";
 
   static const String removeStudentEndPoint = "hod/student/removeStudents";
+
+  static const String removeLastSemStudentEndPoint =
+      "hod/student/removeLastSemStudent";
 }

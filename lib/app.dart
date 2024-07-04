@@ -13,8 +13,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bool isLoggedIn =
-        authService.isLoggedIn(); // This is a local boolean variable
+    bool isLoggedIn = authService.isLoggedIn();
 
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,

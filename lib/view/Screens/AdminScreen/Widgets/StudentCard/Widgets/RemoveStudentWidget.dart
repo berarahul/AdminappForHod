@@ -32,7 +32,6 @@ class RemoveStudentModal extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Dropdown for selecting department id
-                // Dropdown for selecting department id
                 Obx(() {
                   return DropdownButton<int>(
                       alignment: Alignment.center,

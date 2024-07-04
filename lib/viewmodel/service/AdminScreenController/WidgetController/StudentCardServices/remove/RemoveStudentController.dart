@@ -178,6 +178,12 @@ class RemoveStudentController extends GetxController {
             "deptId": selectedDepartmentId.value,
             "rolls": studentRollNumber,
           });
+
+      //Show a snackbar message to indicate successful removal.
+      Get.snackbar(
+        "Success",
+        "Selected students have been removed",
+      );
     } else {
       // Print an error message if userModel is null.
       Get.snackbar(
@@ -189,6 +195,7 @@ class RemoveStudentController extends GetxController {
 
   Future<void> updateList() async {
     students.clear();
+    selectedStudents.clear();
     await fetchAllStudent();
   }
 
