@@ -3,15 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-
-import 'Widgets/TeacherCard/TeacherScreen.dart';
-
 class AdminScreen extends StatelessWidget {
-  final List<String> buttonNames = [
-    'Student',
-    'Teacher',
-    'Subject'
-  ];
+  final List<String> buttonNames = ['Student', 'Teacher', 'Subject'];
+
+  AdminScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -52,8 +47,7 @@ class AdminScreen extends StatelessWidget {
                           Get.toNamed('/student');
                         } else if (buttonNames[index] == 'Teacher') {
                           Get.toNamed('/teacher');
-                        }
-                        else if (buttonNames[index] == 'Subject'){
+                        } else if (buttonNames[index] == 'Subject') {
                           Get.toNamed('/subject');
                         }
                         // Define other actions for other buttons here
@@ -74,7 +68,7 @@ class AdminCard extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
 
-  const AdminCard({required this.title, required this.onTap});
+  const AdminCard({super.key, required this.title, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
