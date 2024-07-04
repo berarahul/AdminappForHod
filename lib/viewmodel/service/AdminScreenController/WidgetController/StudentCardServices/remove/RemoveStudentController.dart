@@ -27,10 +27,21 @@ class RemoveStudentController extends GetxController {
   Rx<int?> selectedSemester = Rx<int?>(null);
   // Observable list of all students. Initially empty.
   RxList students = [].obs;
+  // Observable list of student roll numbers. Initially empty.
+  RxList<int> studentRollNumber = <int>[].obs;
   // Observable list of students filtered by search query. Initially empty.
   RxList filteredStudents = [].obs;
   // Observable list of selected students for removal. Initially empty.
   RxList selectedStudents = [].obs;
+
+  void toggleIsUserSelected({required int index}) {
+    var student = students[index];
+    if (selectedStudents.contains(student)) {
+      selectedStudents.remove(student);
+    } else {
+      selectedStudents.add(student);
+    }
+  }
 
   // Fetches students from a simulated API based on the selected semester.
   void fetchStudents(int semester) {
@@ -140,6 +151,8 @@ class RemoveStudentController extends GetxController {
 
         for (var student in bodyDecode) {
           students.add(student['name']);
+
+          studentRollNumber.add(student['roll']);
         }
       });
     } else {
@@ -151,13 +164,20 @@ class RemoveStudentController extends GetxController {
   }
 
   // Removes the selected students. Placeholder for actual removal logic.
-  void removeSelectedStudents() {
+  Future<void> removeSelectedStudents() async {
     // Store data of user model in a variable which can be null.
     final UserModel? userModel = authService.getUserModel();
 
     // If userModel is not null, proceed with removal logic.
     if (userModel != null) {
       // Print the user model data.
+      await ApiHelper.delete(StudentCardApi.removeStudentEndPoint,
+          headers: await ApiHelper().getHeaders(),
+          body: {
+            "semester": selectedSemester.value,
+            "deptId": selectedDepartmentId.value,
+            "rolls": studentRollNumber,
+          });
     } else {
       // Print an error message if userModel is null.
       Get.snackbar(
@@ -165,6 +185,11 @@ class RemoveStudentController extends GetxController {
         "please log-out and log-in again",
       );
     }
+  }
+
+  Future<void> updateList() async {
+    students.clear();
+    await fetchAllStudent();
   }
 
   @override

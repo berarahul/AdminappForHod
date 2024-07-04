@@ -48,4 +48,24 @@ class ApiHelper {
       print('Data posted successfully');
     }
   }
+
+  // Delete method
+  static Future<void> delete(
+    String endpoint, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? body,
+  }) async {
+    final Uri uri = Uri.parse(baseUrl + endpoint);
+
+    final response = await http.delete(
+      uri,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    if (response.statusCode != 200) {
+      print('Failed to delete data');
+    } else {
+      print('Data deleted successfully');
+    }
+  }
 }

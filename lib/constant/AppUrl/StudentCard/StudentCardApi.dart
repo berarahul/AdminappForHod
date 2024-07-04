@@ -14,4 +14,6 @@ class StudentCardApi {
   // then we will get the list of departmentsID and other
   // final endpoint will be like this "hod/dept/$departmentId"
   static const String departmentListEndPoint = "dept";
+
+  static const String removeStudentEndPoint = "hod/student/removeStudents";
 }
