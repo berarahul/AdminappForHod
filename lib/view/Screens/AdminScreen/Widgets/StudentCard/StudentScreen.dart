@@ -10,6 +10,8 @@ import 'Widgets/UpdateStudentWidget.dart';
 class StudentActionsScreen extends StatelessWidget {
   final StudentController controller = Get.put(StudentController());
 
+  StudentActionsScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -129,6 +131,7 @@ class StudentActionWidget extends StatelessWidget {
   final VoidCallback onTap;
 
   const StudentActionWidget({
+    super.key,
     required this.actionText,
     required this.onTap,
   });

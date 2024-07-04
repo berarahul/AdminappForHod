@@ -114,7 +114,7 @@ import 'Widgets/TeacherCard/TeacherScreen.dart';
 class AdminScreen extends StatelessWidget {
   final List<String> buttonNames = ['Student', 'Teacher', 'Subject'];
 
-  const AdminScreen({super.key});
+  AdminScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

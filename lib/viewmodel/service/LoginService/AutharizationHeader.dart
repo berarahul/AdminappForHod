@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:developer';
+
 import 'package:http/http.dart' as http;
 import 'AuthServices.dart';
 
@@ -27,12 +30,22 @@ class ApiHelper {
     return await http.get(uri, headers: headers);
   }
 
-  static Future<http.Response> post(
+  static Future<void> post(
     String endpoint, {
     Map<String, String>? headers,
     dynamic body,
   }) async {
     final Uri uri = Uri.parse(baseUrl + endpoint);
-    return await http.post(uri, headers: headers, body: body);
+
+    final response = await http.post(
+      uri,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    if (response.statusCode != 200) {
+      print('Failed to post data');
+    } else {
+      print('Data posted successfully');
+    }
   }
 }

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       darkTheme: AppTheme.darkTheme,
       // initialRoute: AppRoutes.login,
-      home: isLoggedIn ? const AdminScreen() : LoginScreen(),
+      home: isLoggedIn ? AdminScreen() : LoginScreen(),
       getPages: AppRoutes.routes,
     );
   }

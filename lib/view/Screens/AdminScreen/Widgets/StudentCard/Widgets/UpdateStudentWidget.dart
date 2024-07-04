@@ -2,15 +2,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/update/UpdateStudentController.dart';
- // Import your actual path
+// Import your actual path
 
 class UpdateStudentModal extends StatelessWidget {
-  final UpdateStudentController controller = Get.put(UpdateStudentController()); // Ensure controller is initialized
+  final UpdateStudentController controller = Get.put(UpdateStudentController());
+
+  UpdateStudentModal({super.key}); // Ensure controller is initialized
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding:
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -27,7 +30,9 @@ class UpdateStudentModal extends StatelessWidget {
             const SizedBox(height: 20),
             DropdownButton<String>(
               hint: const Text('Select Semester'),
-              value: controller.selectedSemester.value.isEmpty ? null : controller.selectedSemester.value,
+              value: controller.selectedSemester.value.isEmpty
+                  ? null
+                  : controller.selectedSemester.value,
               onChanged: (newValue) {
                 controller.fetchStudents(newValue!);
               },
@@ -43,7 +48,7 @@ class UpdateStudentModal extends StatelessWidget {
               onChanged: (value) {
                 controller.searchStudents(value);
               },
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Search Student',
                 border: OutlineInputBorder(),
               ),
@@ -60,7 +65,8 @@ class UpdateStudentModal extends StatelessWidget {
                       return ListTile(
                         title: Text(controller.filteredStudents[index]),
                         onTap: () {
-                          _showEditStudentModal(context, controller.filteredStudents[index], index);
+                          _showEditStudentModal(context,
+                              controller.filteredStudents[index], index);
                         },
                       );
                     },
@@ -74,12 +80,14 @@ class UpdateStudentModal extends StatelessWidget {
     );
   }
 
-  void _showEditStudentModal(BuildContext context, String studentName, int index) {
+  void _showEditStudentModal(
+      BuildContext context, String studentName, int index) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: EditStudentModal(studentName: studentName, index: index),
       ),
     );
@@ -90,13 +98,15 @@ class EditStudentModal extends StatelessWidget {
   final String studentName;
   final int index;
 
-  EditStudentModal({required this.studentName, required this.index});
+  EditStudentModal({super.key, required this.studentName, required this.index});
 
-  final UpdateStudentController controller = Get.find<UpdateStudentController>();
+  final UpdateStudentController controller =
+      Get.find<UpdateStudentController>();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController(text: studentName);
+    TextEditingController nameController =
+        TextEditingController(text: studentName);
 
     return Container(
       padding: const EdgeInsets.all(16.0),
@@ -114,7 +124,7 @@ class EditStudentModal extends StatelessWidget {
           const SizedBox(height: 20),
           TextField(
             controller: nameController,
-            decoration: InputDecoration(
+            decoration: const InputDecoration(
               labelText: 'Student Name',
               border: OutlineInputBorder(),
             ),
