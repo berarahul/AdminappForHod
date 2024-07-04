@@ -1,4 +1,5 @@
 
+import 'package:attendanceadmin/view/Screens/AdminScreen/AdminScreen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -6,6 +7,7 @@ import 'package:iconsax/iconsax.dart';
 
 import '../../../../constant/AppColors.dart';
 import '../../../../constant/RoundButton.dart';
+import '../../../../constant/routes/approutes.dart';
 import '../../../../constant/sizes.dart';
 import '../../../../constant/text_string.dart';
 import '../../../../model/LoginModel.dart';
@@ -98,8 +100,10 @@ class Login_form extends StatelessWidget {
                 try {
                   UserModel? userModel = await authService.login(username, password); // Call the login method with parameters
                   if (userModel != null) {
-                    //
-                    // Get.to(const BottomNavigationMenu());    IMPORTANT
+
+      Get.to(AdminScreen());
+
+
                   } else {
                     // Handle login failure
                     Get.snackbar('Login Failed', 'Invalid credentials');

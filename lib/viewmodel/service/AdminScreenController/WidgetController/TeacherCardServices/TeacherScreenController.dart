@@ -1,23 +1,23 @@
 import 'package:get/get.dart';
 
-class SubjectController extends GetxController {
+class TeacherController extends GetxController {
   var actions = [
-    'Add new subject',
-    'Update subject',
-    'Remove subject',
+    'Add Teacher',
+    'Remove Teacher',
+    'Update Teacher',
 
   ].obs;
 
   // Define methods to handle actions if needed
-  void addSubject() {
+  void addTeacher() {
     // Your logic to add a student
   }
 
-  void updateSubject() {
+  void removeTeacher() {
     // Your logic to remove a student
   }
 
-  void removeSubject() {
+  void updateTeacher() {
     // Your logic to update a student
   }
 
