@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 import 'package:attendanceadmin/constant/AppUrl/StudentCard/StudentCardApi.dart';
 import 'package:get/get.dart';
@@ -21,6 +22,8 @@ class RemoveStudentControllerFromLastSem extends GetxController {
 
   RxList<String> selectedStudent = <String>[].obs;
 
+  RxList<int> selectedStudentRollNumber = <int>[].obs;
+
   // Observable for tracking the selected department ID. Initially null.
   Rx<int?> selectedDepartmentId = Rx<int?>(null);
 
@@ -32,12 +35,33 @@ class RemoveStudentControllerFromLastSem extends GetxController {
     }
   }
 
-  void selectAllStudent() {
-    if (students.length == selectedStudent.length) {
-      selectedStudent.clear();
+  void toggleSelectedStudentRollNumber(int rollNumber) {
+    if (selectedStudentRollNumber.contains(rollNumber)) {
+      selectedStudentRollNumber.remove(rollNumber);
     } else {
-      selectedStudent.clear();
-      selectedStudent.addAll(students);
+      selectedStudentRollNumber.add(rollNumber);
+    }
+  }
+
+  void selectAllStudent() {
+    if (students.isNotEmpty) {
+      if (students.length == selectedStudent.length) {
+        selectedStudent.clear();
+      } else {
+        selectedStudent.clear();
+        selectedStudent.addAll(students);
+      }
+    }
+  }
+
+  void selectAllStudentRollNumber() {
+    if (studentRollNumber.isNotEmpty) {
+      if (studentRollNumber.length == selectedStudentRollNumber.length) {
+        selectedStudentRollNumber.clear();
+      } else {
+        selectedStudentRollNumber.clear();
+        selectedStudentRollNumber.addAll(studentRollNumber);
+      }
     }
   }
 
@@ -75,6 +99,8 @@ class RemoveStudentControllerFromLastSem extends GetxController {
     ).then((value) {
       final List<dynamic> bodyDecode = jsonDecode(value.body);
 
+      print(bodyDecode);
+
       for (var student in bodyDecode) {
         students.add(student['name']);
 
@@ -84,11 +110,46 @@ class RemoveStudentControllerFromLastSem extends GetxController {
   }
 
   FutureOr<void> removeStudentFromLastSem() async {
-    await ApiHelper.delete(
-      "${StudentCardApi.removeLastSemStudentEndPoint}?deptId=$selectedDepartmentId",
-      headers: await ApiHelper().getHeaders(),
-      body: {},
-    );
+    if (selectedDepartmentId.value != null) {
+      final url = Uri.parse(
+          "${ApiHelper.baseUrl}${StudentCardApi.removeLastSemStudentEndPoint}?deptId=$selectedDepartmentId");
+
+      final response = await http.delete(
+        url,
+        headers: await ApiHelper().getHeaders(),
+        body: jsonEncode(selectedStudentRollNumber),
+      );
+
+      if (response.statusCode == 200) {
+        Get.snackbar(
+          "Success",
+          "Students removed successfully",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+
+        reset();
+      } else {
+        Get.snackbar(
+          "Error",
+          "Something went wrong! Please try again later.",
+          snackPosition: SnackPosition.BOTTOM,
+        );
+      }
+    } else {
+      Get.snackbar(
+        "Error",
+        "Please select the department",
+        snackPosition: SnackPosition.BOTTOM,
+      );
+    }
+  }
+
+  void reset() {
+    students.clear();
+    selectedStudent.clear();
+    studentRollNumber.clear();
+    selectedStudentRollNumber.clear();
+    selectedDepartmentId.value = null;
   }
 
   @override

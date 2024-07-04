@@ -48,18 +48,21 @@ class Removestudentfromlastsemwidget extends StatelessWidget {
                     child: Text(departmentId.toString()),
                   );
                 }).toList())),
-            Row(
-              children: [
-                Obx(() => Checkbox(
-                      value: controller.students.length ==
-                          controller.selectedStudent.length,
-                      onChanged: (value) {
-                        controller.selectAllStudent();
-                      },
-                    )),
-                const Text('Select All'),
-              ],
-            ),
+            Obx(() => controller.students.isEmpty
+                ? const SizedBox()
+                : Row(
+                    children: [
+                      Obx(() => Checkbox(
+                            value: controller.students.length ==
+                                controller.selectedStudent.length,
+                            onChanged: (value) {
+                              controller.selectAllStudent();
+                              controller.selectAllStudentRollNumber();
+                            },
+                          )),
+                      const Text('Select All'),
+                    ],
+                  )),
             const SizedBox(height: 20),
             Obx(() {
               return ListView.builder(
@@ -74,6 +77,9 @@ class Removestudentfromlastsemwidget extends StatelessWidget {
                       onChanged: (value) async {
                         controller
                             .toggleSlectedStudent(controller.students[index]);
+
+                        controller.toggleSelectedStudentRollNumber(
+                            controller.studentRollNumber[index]);
                       },
                     ),
                   );
@@ -81,8 +87,8 @@ class Removestudentfromlastsemwidget extends StatelessWidget {
               );
             }),
             ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+              onPressed: () async {
+                await controller.removeStudentFromLastSem();
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.red,
