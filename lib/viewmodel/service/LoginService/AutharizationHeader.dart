@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import 'AuthServices.dart';
 
@@ -66,6 +67,26 @@ class ApiHelper {
       print('Failed to delete data');
     } else {
       print('Data deleted successfully');
+    }
+  }
+
+  // Update method
+  static Future<void> update(
+    String endpoint, {
+    Map<String, String>? headers,
+    Map<String, dynamic>? body,
+  }) async {
+    final Uri uri = Uri.parse(baseUrl + endpoint);
+
+    final response = await http.put(
+      uri,
+      headers: headers,
+      body: jsonEncode(body),
+    );
+    if (response.statusCode != 200) {
+      Get.snackbar('Error', 'Failed to update data');
+    } else {
+      Get.snackbar('Success', 'Data updated successfully');
     }
   }
 }
