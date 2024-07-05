@@ -16,7 +16,7 @@ class RemoveTeacherModel extends StatelessWidget {
         height: MediaQuery.of(context).size.height,
         child: Padding(
           padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -45,6 +45,10 @@ class RemoveTeacherModel extends StatelessWidget {
                       onChanged: (newValue) {
                         // Update the selectedDepartmentId with the new value
                         controller.selectedDepartmentId.value = newValue!;
+
+                        // Fetch all the teachers of the selected department
+
+                        controller.fetchAllTeachers();
                       },
                       items: controller.departmentIdList.map((departmentId) {
                         return DropdownMenuItem<int>(
@@ -53,9 +57,6 @@ class RemoveTeacherModel extends StatelessWidget {
                         );
                       }).toList());
                 }),
-
-
-
 
                 const SizedBox(height: 20),
                 Obx(() {
@@ -66,9 +67,7 @@ class RemoveTeacherModel extends StatelessWidget {
                       child: Column(
                         children: [
                           TextField(
-                            onChanged: (value) {
-                              controller.filterSearchResults(value);
-                            },
+                            onChanged: (value) {},
                             decoration: const InputDecoration(
                               labelText: 'Search Teacher',
                               border: OutlineInputBorder(),
@@ -90,29 +89,36 @@ class RemoveTeacherModel extends StatelessWidget {
                           // const SizedBox(height: 20),
                           Obx(() {
                             return Expanded(
-                                child: controller.teachers.isEmpty
-                                    ? const Center(
-                                    child: CircularProgressIndicator())
-                                    : ListView.builder(
-                                  itemCount: controller.teachers.length,
-                                  itemBuilder: (context, index) {
-                                    return Obx(() {
-                                      return CheckboxListTile(
-                                        value: controller.selectedTeachers
-                                            .contains(
-                                          controller.teachers[index],
-                                        ),
-                                        onChanged: (value) {
-                                          controller.toggleIsTeacherSelected(
-                                            index: index,
-                                          );
-                                        },
-                                        title: Text(
-                                            controller.teachers[index]),
-                                      );
-                                    });
-                                  },
-                                ));
+                              child: controller.teachersList.isEmpty
+                                  ? const Center(
+                                      child: CircularProgressIndicator())
+                                  : ListView.builder(
+                                      itemCount: controller.teachersList.length,
+                                      itemBuilder: (context, index) {
+                                        return Obx(() => ListTile(
+                                              title: Text(
+                                                controller.teachersList[index]
+                                                    ['name'],
+                                              ),
+                                              subtitle: Text(
+                                                  "Teacher ID: ${controller.teachersList[index]['teacherId']}"),
+                                              trailing: Obx(() => Checkbox(
+                                                    value: controller
+                                                            .selectedTeacher
+                                                            .value ==
+                                                        controller.teachersList[
+                                                            index]['teacherId'],
+                                                    onChanged: (value) {
+                                                      controller.toogleSelectAndUnselect(
+                                                          teacherId: controller
+                                                                  .teachersList[
+                                                              index]['teacherId']);
+                                                    },
+                                                  )),
+                                            ));
+                                      },
+                                    ),
+                            );
                           }),
                           const SizedBox(height: 20),
                           ElevatedButton(

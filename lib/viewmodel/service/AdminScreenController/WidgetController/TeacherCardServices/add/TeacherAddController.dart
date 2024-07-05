@@ -123,9 +123,22 @@ class AddTeacherController extends GetxController {
         Teachercardapi.createTeacherEndpoint,
         headers: await ApiHelper().getHeaders(),
         body: body,
+      ).then((value) {
+        Get.snackbar(
+          'Success',
+          'Teacher added successfully',
+          snackPosition: SnackPosition.BOTTOM,
+        );
+        clear();
+      }).catchError(
+        (e) {
+          Get.snackbar(
+            'Error',
+            'Failed to add teacher',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        },
       );
-
-      clear();
     } else {
       Get.snackbar(
         'Error',

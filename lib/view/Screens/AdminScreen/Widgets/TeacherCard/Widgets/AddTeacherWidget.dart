@@ -74,9 +74,7 @@ class AddTeacherModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-
             const SizedBox(height: 20),
-
             const SizedBox(height: 20),
             Obx(() => DropdownButton<int>(
                 alignment: Alignment.center,
@@ -97,37 +95,40 @@ class AddTeacherModal extends StatelessWidget {
                     value: departmentId,
                     child: Text(departmentId.toString()),
                   );
-                }).toList())
-            ),
-
+                }).toList())),
             const SizedBox(height: 20),
-            const Text('Remove Subjects'),
-            Obx(() => DropdownSearch<String>.multiSelection(
-              items: controller.subjectsList.toList(), // Use fetched subjects
-              dropdownBuilder: (context, selectedItems) {
-                return Wrap(
-                  spacing: 8.0,
-                  runSpacing: 8.0,
-                  children: selectedItems.map((item) => Chip(label: Text('$item'))).toList(),
-                );
-              },
-              popupProps: PopupPropsMultiSelection.menu(
-                itemBuilder: (context, item, isSelected) {
-                  return ListTile(
-                    title: Text('$item'),
-                    selected: isSelected,
+            const Text('Add Subjects'),
+            Obx(
+              () => DropdownSearch<String>.multiSelection(
+                items: controller.subjectsList.toList(), // Use fetched subjects
+                dropdownBuilder: (context, selectedItems) {
+                  return Wrap(
+                    spacing: 8.0,
+                    runSpacing: 8.0,
+                    children: selectedItems
+                        .map((item) => Chip(label: Text(item)))
+                        .toList(),
                   );
                 },
+                popupProps: PopupPropsMultiSelection.menu(
+                  itemBuilder: (context, item, isSelected) {
+                    return ListTile(
+                      title: Text(item),
+                      selected: isSelected,
+                    );
+                  },
+                ),
+                onChanged: (List<String> value) {
+                  List<int> selectedIds =
+                      value.map((String item) => int.parse(item)).toList();
+                  controller.selectedSubjectIds.value = selectedIds;
+                },
+                selectedItems: controller.selectedSubjectIds
+                    .map((id) => id.toString())
+                    .toList(),
               ),
-              onChanged: (List<String> value) {
-                List<int> selectedIds = value.map((String item) => int.parse(item)).toList();
-                controller.selectedSubjectIds.value = selectedIds;
-              },
-              selectedItems: controller.selectedSubjectIds.map((id) => id.toString()).toList(),
-            ),
             ),
             const SizedBox(height: 20),
-
             ElevatedButton(
               onPressed: () async => await controller.submit(),
               style: ElevatedButton.styleFrom(
