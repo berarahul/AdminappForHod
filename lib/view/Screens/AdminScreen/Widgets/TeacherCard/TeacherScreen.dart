@@ -76,7 +76,7 @@ class TeacherActionScreen extends StatelessWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: AddTeacherModel(),
+        child: AddTeacherModal(),
       ),
     );
   }
@@ -91,7 +91,7 @@ class TeacherActionScreen extends StatelessWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: RemoveTeacherScreen(),
+        child: RemoveTeacherModel(),
       ),
     );
   }

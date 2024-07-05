@@ -47,7 +47,8 @@ class Removestudentfromlastsemwidget extends StatelessWidget {
                     value: departmentId,
                     child: Text(departmentId.toString()),
                   );
-                }).toList())),
+                }).toList())
+            ),
             Obx(() => controller.students.isEmpty
                 ? const SizedBox()
                 : Row(

@@ -5,6 +5,7 @@ import '../../../../../viewmodel/service/AdminScreenController/WidgetController/
 import 'Widgets/AddStudentWidget.dart';
 import 'Widgets/RemoveStudentFromLastSemWidget.dart';
 import 'Widgets/RemoveStudentWidget.dart';
+import 'Widgets/SemesterEdit.dart';
 import 'Widgets/UpdateStudentWidget.dart';
 
 class StudentActionsScreen extends StatelessWidget {
@@ -71,6 +72,10 @@ class StudentActionsScreen extends StatelessWidget {
       controller.removeStudentFromLastSem();
       _showRemoveStudentFromLastSemModal(context);
     }
+    else if (action=='Add Semester') {
+      controller.semesterAdd();
+      __showAddSemesterModal(context);
+    }
   }
 
   void _showAddStudentModal(BuildContext context) {
@@ -124,7 +129,30 @@ class StudentActionsScreen extends StatelessWidget {
       ),
     );
   }
+
+  void __showAddSemesterModal(BuildContext context) {
+    showModalBottomSheet(
+
+        context: context,
+    isScrollControlled: true,
+      builder: (context) =>
+          Padding(
+            padding: EdgeInsets.only(
+              bottom: MediaQuery
+                  .of(context)
+                  .viewInsets
+                  .bottom,
+            ),
+            child: AddSemesterScreen(),
+          ),
+    );
+  }
+
 }
+
+
+
+
 
 class StudentActionWidget extends StatelessWidget {
   final String actionText;

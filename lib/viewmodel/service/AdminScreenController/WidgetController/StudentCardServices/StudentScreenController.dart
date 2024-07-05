@@ -5,7 +5,8 @@ class StudentController extends GetxController {
     'Add Student',
     'Remove Student',
     'Update Student',
-    'Remove student from last sem'
+    'Remove student from last sem',
+    'Semester Add'
   ].obs;
 
   // Define methods to handle actions if needed
@@ -23,5 +24,9 @@ class StudentController extends GetxController {
 
   void removeStudentFromLastSem() {
     // Your logic to remove a student from last sem
+  }
+
+  void semesterAdd(){
+
   }
 }
