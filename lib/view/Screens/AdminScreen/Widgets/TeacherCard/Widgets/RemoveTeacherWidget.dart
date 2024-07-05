@@ -59,7 +59,7 @@ class RemoveTeacherModel extends StatelessWidget {
 
                 const SizedBox(height: 20),
                 Obx(() {
-                  if (controller.selectedSemester.value == null) {
+                  if (controller.selectedDepartmentId.value == null) {
                     return Container();
                   } else {
                     return Expanded(
@@ -90,25 +90,25 @@ class RemoveTeacherModel extends StatelessWidget {
                           // const SizedBox(height: 20),
                           Obx(() {
                             return Expanded(
-                                child: controller.students.isEmpty
+                                child: controller.teachers.isEmpty
                                     ? const Center(
                                     child: CircularProgressIndicator())
                                     : ListView.builder(
-                                  itemCount: controller.students.length,
+                                  itemCount: controller.teachers.length,
                                   itemBuilder: (context, index) {
                                     return Obx(() {
                                       return CheckboxListTile(
-                                        value: controller.selectedStudents
+                                        value: controller.selectedTeachers
                                             .contains(
-                                          controller.students[index],
+                                          controller.teachers[index],
                                         ),
                                         onChanged: (value) {
-                                          controller.toggleIsUserSelected(
+                                          controller.toggleIsTeacherSelected(
                                             index: index,
                                           );
                                         },
                                         title: Text(
-                                            controller.students[index]),
+                                            controller.teachers[index]),
                                       );
                                     });
                                   },
@@ -117,7 +117,7 @@ class RemoveTeacherModel extends StatelessWidget {
                           const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () async {
-                              await controller.removeSelectedStudents();
+                              await controller.removeSelectedTeachers();
 
                               await controller.updateList();
                             },
