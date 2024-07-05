@@ -43,7 +43,7 @@ class ApiHelper {
       headers: headers,
       body: jsonEncode(body),
     );
-    if (response.statusCode == 200) {
+    if (response.statusCode == 201) {
       print('Data posted successfully');
     } else {
       print('Failed to post data, status code: ${response.statusCode}');
@@ -51,7 +51,7 @@ class ApiHelper {
   }
 
   // Delete method
-  static Future<void> delete(
+  static Future<http.Response> delete(
     String endpoint, {
     Map<String, String>? headers,
     Map<String, dynamic>? body,
@@ -63,11 +63,7 @@ class ApiHelper {
       headers: headers,
       body: jsonEncode(body),
     );
-    if (response.statusCode == 200) {
-      print('Data deleted successfully');
-    } else {
-      print('Failed to delete data, status code: ${response.statusCode}');
-    }
+    return response;
   }
 
   // Update method

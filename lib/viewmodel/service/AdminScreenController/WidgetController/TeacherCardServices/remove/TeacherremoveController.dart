@@ -18,50 +18,15 @@ class RemoveTeacherController extends GetxController {
   RxList teachers = [].obs;
   RxList<int> teacherIdList = <int>[].obs;
   RxList filteredTeachers = [].obs;
-  RxList selectedTeachers = [].obs;
 
-  void toggleIsTeacherSelected({required int index}) {
-    var teacher = teachers[index];
-    if (selectedTeachers.contains(teacher)) {
-      selectedTeachers.remove(teacher);
-    } else {
-      selectedTeachers.add(teacher);
-    }
-  }
+  RxInt selectedTeacher = 0.obs;
 
-  void fetchTeachers() {
-    Future.delayed(const Duration(seconds: 1), () {
-      teachers.clear();
-      fetchAllTeachers();
-      filteredTeachers.assignAll(teachers);
-    });
-  }
+  RxList<Map<String, dynamic>> teachersList = <Map<String, dynamic>>[].obs;
 
-  void filterSearchResults(String query) {
-    if (query.isEmpty) {
-      filteredTeachers.assignAll(teachers);
-    } else {
-      final lowercaseQuery = query.toLowerCase();
-      filteredTeachers.assignAll(teachers.where((teacher) => teacher.toLowerCase().contains(lowercaseQuery)));
-    }
-  }
-
-  void selectAllTeachers(bool selectAll) {
-    if (selectAll) {
-      selectedTeachers.assignAll(filteredTeachers);
-    } else {
-      selectedTeachers.clear();
-    }
-  }
-
-  void addOrRemoveTeacher(String teacher, bool selected) {
-    if (selected) {
-      if (!selectedTeachers.contains(teacher)) {
-        selectedTeachers.add(teacher);
-      }
-    } else {
-      selectedTeachers.remove(teacher);
-    }
+  void toogleSelectAndUnselect({required int teacherId}) {
+    selectedTeacher.value == teacherId
+        ? selectedTeacher.value = 0
+        : selectedTeacher.value = teacherId;
   }
 
   FutureOr<void> getDepartmentId() async {
@@ -83,20 +48,26 @@ class RemoveTeacherController extends GetxController {
   }
 
   FutureOr<void> fetchAllTeachers() async {
-    if (selectedDepartmentId.value != null) {
-      await ApiHelper.get(
-        "${Teachercardapi.allTeachersEndpoint}/${selectedDepartmentId.value}",
-        headers: await ApiHelper().getHeaders(),
-      ).then((value) {
-        final List<dynamic> bodyDecode = jsonDecode(value.body);
-
-        for (var teacher in bodyDecode) {
-          teachers.add(teacher['teacherId']);
-          teacherIdList.add(teacher['name']);
-        }
-      });
+    if (teacherIdList.isNotEmpty) {
+      teacherIdList.clear();
     } else {
-      Get.snackbar("Error", "Please select a department");
+      if (selectedDepartmentId.value != null) {
+        await ApiHelper.get(
+          "${Teachercardapi.allTeachersEndpoint}${selectedDepartmentId.value}",
+          headers: await ApiHelper().getHeaders(),
+        ).then((value) {
+          final List<dynamic> bodyDecode = jsonDecode(value.body);
+
+          for (var teacher in bodyDecode) {
+            teachersList.add({
+              "teacherId": teacher['teacherId'],
+              "name": teacher['name'],
+            });
+          }
+        });
+      } else {
+        Get.snackbar("Error", "Please select a department");
+      }
     }
   }
 
@@ -104,14 +75,19 @@ class RemoveTeacherController extends GetxController {
     final UserModel? userModel = authService.getUserModel();
 
     if (userModel != null) {
-      await ApiHelper.delete(StudentCardApi.removeStudentEndPoint,
-          headers: await ApiHelper().getHeaders(),
-          body: {
-            "deptId": selectedDepartmentId.value,
-            "rolls": teacherIdList,
-          });
+      final data = await ApiHelper.delete(
+        "${Teachercardapi.removeTeacherEndpoint}$selectedTeacher",
+        headers: await ApiHelper().getHeaders(),
+      );
 
-      Get.snackbar("Success", "Selected teachers have been removed");
+      if (data.statusCode == 200) {
+        Get.snackbar("Success", "Teacher removed successfully");
+        updateList();
+      } else {
+        Get.snackbar("Error", "Something went wrong");
+
+        print(data.body);
+      }
     } else {
       Get.snackbar("Something Went Wrong", "Please log-out and log-in again");
     }
@@ -119,7 +95,8 @@ class RemoveTeacherController extends GetxController {
 
   Future<void> updateList() async {
     teachers.clear();
-    selectedTeachers.clear();
+    teachersList.clear();
+    selectedTeacher = 0.obs;
     await fetchAllTeachers();
   }
 
