@@ -1,7 +1,3 @@
-
-
-
-
 import 'dart:convert';
 import 'package:attendanceadmin/constant/AppUrl/SubjectCard/SubjectCardApi.dart';
 import 'package:get/get.dart';
@@ -66,6 +62,7 @@ class AddTeacherController extends GetxController {
       }
     }
   }
+
   Future<void> fetchallSubjects() async {
     try {
       if (selectedDepartmentId.value == null) {
@@ -76,8 +73,8 @@ class AddTeacherController extends GetxController {
       String endpoint =
           "${StudentCardApi.departmentListEndPoint}/${Subjectcardapi.subjectEndPoint}/${selectedDepartmentId.value}";
 
-      var response =
-      await ApiHelper.get(endpoint, headers: await ApiHelper().getHeaders());
+      var response = await ApiHelper.get(endpoint,
+          headers: await ApiHelper().getHeaders());
 
       if (response.statusCode == 200) {
         Map<String, dynamic> decodedData = jsonDecode(response.body);
@@ -88,10 +85,11 @@ class AddTeacherController extends GetxController {
 
           subjectsList.clear();
 
-          subjectsListResponse.forEach((subject) {
-            String subjectId = subject['subjectId'].toString(); // Assuming subjectId is an int
+          for (var subject in subjectsListResponse) {
+            String subjectId =
+                subject['subjectId'].toString(); // Assuming subjectId is an int
             subjectsList.add(subjectId);
-          });
+          }
         } else {
           print(
               'Error: Invalid response format - subjects key not found or not a list');
@@ -110,41 +108,24 @@ class AddTeacherController extends GetxController {
         password.value != 0 &&
         confirmPassword.value != 0 &&
         selectedDepartmentId.value != 0) {
-      // get token from AuthService
-      final String? token = authService.getToken();
+      // Json body for the API request
+      final Map<String, dynamic> body = {
+        'name': teacherName.value,
+        'userName': userName.value,
+        'password': password.value,
+        'confirmPassword': confirmPassword.value,
+        'deptId': int.parse(selectedDepartmentId.value.toString()),
+        'subjects': selectedSubjectIds.toList(),
+      };
 
-      // check if token is not null
-      if (token != null) {
-        // Headers for the API request
-        final Map<String, String> headers = {
-          'Content-Type': 'application/json',
-          'Authorization': token,
-        };
+      // Post request to add student
+      await ApiHelper.post(
+        Teachercardapi.createTeacherEndpoint,
+        headers: await ApiHelper().getHeaders(),
+        body: body,
+      );
 
-        // Json body for the API request
-        final Map<String, dynamic> body = {
-          'name': teacherName.value,
-          'userName': userName.value,
-          'password': password.value,
-          'confirmPassword': confirmPassword.value,
-          'deptId': selectedDepartmentId.value,
-        };
-
-        // Post request to add student
-        await ApiHelper.post(
-          Teachercardapi.createTeacherEndpoint,
-          headers: headers,
-          body: body,
-        );
-
-        Get.snackbar(
-          'Success',
-          'Student added successfully',
-          snackPosition: SnackPosition.BOTTOM,
-        );
-
-        clear();
-      }
+      clear();
     } else {
       Get.snackbar(
         'Error',
@@ -152,8 +133,7 @@ class AddTeacherController extends GetxController {
         snackPosition: SnackPosition.BOTTOM,
       );
     }
-
-    }
+  }
 
   void clear() {
     teacherName.value = '';
@@ -162,10 +142,5 @@ class AddTeacherController extends GetxController {
     confirmPassword.value = '';
 
     selectedDepartmentId.value = null;
-
- 
-
-
   }
-
 }

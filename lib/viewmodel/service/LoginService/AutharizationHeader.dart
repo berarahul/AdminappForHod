@@ -43,10 +43,10 @@ class ApiHelper {
       headers: headers,
       body: jsonEncode(body),
     );
-    if (response.statusCode != 200) {
-      print('Failed to post data');
-    } else {
+    if (response.statusCode == 200) {
       print('Data posted successfully');
+    } else {
+      print('Failed to post data, status code: ${response.statusCode}');
     }
   }
 
@@ -63,10 +63,10 @@ class ApiHelper {
       headers: headers,
       body: jsonEncode(body),
     );
-    if (response.statusCode != 200) {
-      print('Failed to delete data');
-    } else {
+    if (response.statusCode == 200) {
       print('Data deleted successfully');
+    } else {
+      print('Failed to delete data, status code: ${response.statusCode}');
     }
   }
 
