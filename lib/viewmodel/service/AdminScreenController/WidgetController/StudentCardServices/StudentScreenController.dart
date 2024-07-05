@@ -6,7 +6,7 @@ class StudentController extends GetxController {
     'Remove Student',
     'Update Student',
     'Remove student from last sem',
-    'Semester Add'
+    'Add Semester',
   ].obs;
 
   // Define methods to handle actions if needed
