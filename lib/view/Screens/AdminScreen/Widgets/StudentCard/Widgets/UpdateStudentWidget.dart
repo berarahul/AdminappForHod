@@ -28,86 +28,110 @@ class UpdateStudentModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            DropdownButton<String>(
-              hint: const Text('Select Semester'),
-              value: controller.selectedSemester.value.isEmpty
-                  ? null
-                  : controller.selectedSemester.value,
-              onChanged: (newValue) {
-                controller.fetchStudents(newValue!);
-              },
-              items: controller.semesters.map((semester) {
-                return DropdownMenuItem(
-                  value: semester,
-                  child: Text(semester),
-                );
-              }).toList(),
-            ),
+            Obx(() => DropdownButton<int>(
+                  hint: controller.departmentIdList.isEmpty
+                      ? const Text('Loading...')
+                      : const Text('Select Department'),
+                  value: controller.selectedDepartment.value,
+                  onChanged: (newValue) {
+                    controller.selectedDepartment.value = newValue;
+                  },
+                  items: controller.departmentIdList.map((department) {
+                    return DropdownMenuItem(
+                      value: department,
+                      child: Text(department.toString()),
+                    );
+                  }).toList(),
+                )),
             const SizedBox(height: 20),
-            TextField(
-              onChanged: (value) {
-                controller.searchStudents(value);
-              },
-              decoration: const InputDecoration(
-                labelText: 'Search Student',
-                border: OutlineInputBorder(),
-              ),
-            ),
+            Obx(() => DropdownButton<int>(
+                  hint: const Text('Select Semester'),
+                  value: controller.selectedSemester.value,
+                  onChanged: (newValue) async {
+                    controller.selectedSemester.value = newValue;
+
+                    await controller.fetchAllStudent();
+                  },
+                  items: controller.semestersList.map((semester) {
+                    return DropdownMenuItem(
+                      value: semester,
+                      child: Text(semester.toString()),
+                    );
+                  }).toList(),
+                )),
             const SizedBox(height: 20),
-            Expanded(
-              child: Obx(() {
-                if (controller.filteredStudents.isEmpty) {
-                  return const Center(child: Text('No students found'));
-                } else {
-                  return ListView.builder(
-                    itemCount: controller.filteredStudents.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(controller.filteredStudents[index]),
-                        onTap: () {
-                          _showEditStudentModal(context,
-                              controller.filteredStudents[index], index);
-                        },
-                      );
-                    },
-                  );
-                }
-              }),
-            ),
+            Obx(() => controller.selectedDepartment.value != null &&
+                    controller.selectedSemester.value != null
+                ? Expanded(
+                    child: Obx(() {
+                      if (controller.studentsList.isEmpty) {
+                        return const Center(child: Text('No students found'));
+                      } else {
+                        return ListView.builder(
+                          itemCount: controller.studentsList.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(controller.studentsList[index]),
+                              subtitle: Text(
+                                  'Roll Number: ${controller.studentRollNumber[index]}'),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  _showEditStudentModal(context, index);
+                                },
+                              ),
+                            );
+                          },
+                        );
+                      }
+                    }),
+                  )
+                : const SizedBox.shrink())
           ],
         ),
       ),
     );
   }
 
-  void _showEditStudentModal(
-      BuildContext context, String studentName, int index) {
+  void _showEditStudentModal(BuildContext context, int index) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) => Padding(
         padding:
             EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: EditStudentModal(studentName: studentName, index: index),
+        child: EditStudentModal(index: index),
       ),
     );
   }
 }
 
-class EditStudentModal extends StatelessWidget {
-  final String studentName;
+class EditStudentModal extends StatefulWidget {
   final int index;
 
-  EditStudentModal({super.key, required this.studentName, required this.index});
+  const EditStudentModal({super.key, required this.index});
 
-  final UpdateStudentController controller =
-      Get.find<UpdateStudentController>();
+  @override
+  State<EditStudentModal> createState() => _EditStudentModalState();
+}
+
+final UpdateStudentController controller = Get.find<UpdateStudentController>();
+
+class _EditStudentModalState extends State<EditStudentModal> {
+  @override
+  void initState() {
+    controller.departmentController.text =
+        controller.selectedDepartment.value.toString();
+    controller.semesterController.text =
+        controller.selectedSemester.value.toString();
+    controller.nameController.text = controller.studentsList[widget.index];
+    controller.rollController.text =
+        controller.studentRollNumber[widget.index].toString();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController =
-        TextEditingController(text: studentName);
-
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -123,17 +147,43 @@ class EditStudentModal extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           TextField(
-            controller: nameController,
+            controller: controller.departmentController,
+            decoration: const InputDecoration(
+              labelText: 'Department ID',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: controller.semesterController,
+            decoration: const InputDecoration(
+              labelText: 'Semester ID',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: controller.nameController,
             decoration: const InputDecoration(
               labelText: 'Student Name',
               border: OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 20),
+          // Textform field for roll number
+          TextField(
+            controller: controller.rollController,
+            decoration: const InputDecoration(
+              labelText: 'Roll Number',
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
           ElevatedButton(
-            onPressed: () {
-              controller.updateStudentName(index, nameController.text);
-              Navigator.of(context).pop();
+            onPressed: () async {
+              await controller.updatedStudent();
             },
             child: const Text('Save'),
           ),

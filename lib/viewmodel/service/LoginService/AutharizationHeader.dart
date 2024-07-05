@@ -71,7 +71,7 @@ class ApiHelper {
   }
 
   // Update method
-  static Future<void> update(
+  static Future<http.Response> update(
     String endpoint, {
     Map<String, String>? headers,
     Map<String, dynamic>? body,
@@ -83,10 +83,7 @@ class ApiHelper {
       headers: headers,
       body: jsonEncode(body),
     );
-    if (response.statusCode != 200) {
-      Get.snackbar('Error', 'Failed to update data');
-    } else {
-      Get.snackbar('Success', 'Data updated successfully');
-    }
+
+    return response;
   }
 }
