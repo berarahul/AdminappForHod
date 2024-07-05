@@ -72,7 +72,7 @@ class StudentActionsScreen extends StatelessWidget {
       controller.removeStudentFromLastSem();
       _showRemoveStudentFromLastSemModal(context);
     }
-    else if (action=='Add Semester') {
+    else if (action=='Student Transfer Using Semester id') {
       controller.semesterAdd();
       __showAddSemesterModal(context);
     }

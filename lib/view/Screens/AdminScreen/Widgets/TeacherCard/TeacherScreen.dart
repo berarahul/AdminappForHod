@@ -3,8 +3,10 @@ import 'package:get/get.dart';
 import 'package:attendanceadmin/constant/AppColors.dart';
 import '../../../../../sampleUI.dart';
 import '../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/TeacherScreenController.dart';
+import '../StudentCard/Widgets/UpdateStudentWidget.dart';
 import 'Widgets/AddTeacherWidget.dart';
 import 'Widgets/RemoveTeacherWidget.dart';
+import 'Widgets/UpdateTeacherWidget.dart';
 
 
 class TeacherActionScreen extends StatelessWidget {
@@ -106,7 +108,7 @@ void _showUpdateTeacherModal(BuildContext context) {
       padding: EdgeInsets.only(
         bottom: MediaQuery.of(context).viewInsets.bottom,
       ),
-      child: TeacherUpdateScreen(),
+      child: UpdateTeacherModal(),
     ),
   );
 }

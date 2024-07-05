@@ -33,7 +33,7 @@ class AddSubjectModal extends StatelessWidget {
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               onChanged: (value) {
-                controller.userName(value);
+                controller.subjectName(value);
               },
               decoration: const InputDecoration(
                 labelText: 'Subject Name',
@@ -41,8 +41,6 @@ class AddSubjectModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-
-
 
 
             const SizedBox(height: 20),
@@ -58,7 +56,7 @@ class AddSubjectModal extends StatelessWidget {
                   // Update the selectedDepartmentId with the new value
                   controller.selectedDepartmentId.value = newValue!;
 
-                  await controller.fetchallSubjects();
+                  await controller.departmentIdList();
                 },
                 items: controller.departmentIdList.map((departmentId) {
                   return DropdownMenuItem<int>(
@@ -69,10 +67,14 @@ class AddSubjectModal extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             TextField(
-              keyboardType: TextInputType.text,
+              keyboardType: TextInputType.number,
               textInputAction: TextInputAction.next,
               onChanged: (value) {
-                controller.userName(value);
+
+                int? intValue = int.tryParse(value);
+                // Update the controller's semesterId with the parsed int value
+                controller.semesterId.value = intValue;
+
               },
               decoration: const InputDecoration(
                 labelText: 'Semester id',
@@ -84,7 +86,11 @@ class AddSubjectModal extends StatelessWidget {
               keyboardType: TextInputType.text,
               textInputAction: TextInputAction.next,
               onChanged: (value) {
-                controller.userName(value);
+
+                int? intValue = int.tryParse(value);
+                // Update the controller's semesterId with the parsed int value
+                controller.subId.value = intValue;
+
               },
               decoration: const InputDecoration(
                 labelText: 'Subject id',

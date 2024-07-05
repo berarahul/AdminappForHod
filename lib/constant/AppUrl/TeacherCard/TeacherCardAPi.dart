@@ -7,4 +7,6 @@ class Teachercardapi {
   static const String removeTeacherEndpoint='hod/teacher/removeTeacher?teacherId=';
 
   static const String allTeachersEndpoint="hod/teacher/allTeachers?deptId=";
+
+  static const String updateTeacherEndPoint="hod/teacher/updateTeacher";
 }

@@ -1,99 +1,244 @@
+import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/update/UpdateStudentController.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/update/TeacherUpdateController.dart';
 
-class TeacherUpdateScreen extends StatelessWidget {
-  final TeacherUpdateController controller = Get.put(TeacherUpdateController());
+class UpdateTeacherModal extends StatelessWidget {
+  final UpdateTeacherController controller = Get.put(UpdateTeacherController());
+
+  UpdateTeacherModal({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Update Teacher'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
+    return Padding(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      child: Container(
+        padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: controller.nameController,
-                    decoration: InputDecoration(labelText: 'Name'),
-                    validator: (value) {
-                      if (value == null || value.isEmpty) {
-                        return 'Please enter the name';
-                      }
-                      return null;
-                    },
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.search),
-                  onPressed: () {
-
-                    // Show teacher list dialog
-
-
-                    showDialog(
-                      context: context,
-                      builder: (BuildContext context) {
-                        return AlertDialog(
-                          title: Text('Select or Edit Teacher'),
-                          content: Container(
-                            width: double.minPositive,
-                            child: Obx(() => ListView.builder(
-                              itemCount: controller.teacherList.length,
-                              itemBuilder: (context, index) {
-                                final teacherName = controller.teacherList[index];
-                                return ListTile(
-                                  title: Text(teacherName),
-                                  trailing: IconButton(
-                                    icon: Icon(Icons.edit),
-                                    onPressed: () {
-                                      controller.editTeacherName(index, 'New Name');
-                                    },
-                                  ),
-                                  onTap: () {
-                                    controller.selectTeacher(teacherName);
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                              },
-                            )),
-                          ),
-                        );
-                      },
-                    );
-                  },
-                ),
-              ],
+            const Text(
+              'Update Teacher',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
-            SizedBox(height: 20),
-            Text('New Subjects'),
-            // DropdownSearch for new subjects (code remains similar)
+            const SizedBox(height: 20),
+            Obx(() => DropdownButton<int>(
+              hint: controller.departmentIdList.isEmpty
+                  ? const Text('Loading...')
+                  : const Text('Select Department'),
+              isExpanded: true,
+              value: controller.selectedDepartmentId.value,
+              onChanged: (newValue) async {
+                controller.selectedDepartmentId.value = newValue!;
+                // Fetch students only for the selected department
+                await  controller.fetchAllTeacher();
 
-            SizedBox(height: 20),
-            Text('Remove Subjects'),
-            // DropdownSearch for remove subjects (code remains similar)
-
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                if (controller.nameController.text.isNotEmpty) {
-                  controller.updateTeacher();
-                } else {
-                  Get.snackbar('Error', 'Please enter the name');
-                }
               },
-              child: Text('Update Teacher'),
-            ),
+              items: controller.departmentIdList.map((department) {
+                return DropdownMenuItem<int>(
+                  value: department,
+                  child: Text(department.toString()),
+                );
+              }).toList(),
+            )),
+            const SizedBox(height: 20),
+            Obx(() => controller.selectedDepartmentId.value != null
+                ? Expanded(
+              child: Obx(() {
+                if (controller.teacherList.isEmpty) {
+                  return const Center(child: Text('No students found'));
+                } else {
+                  return ListView.builder(
+                    itemCount: controller.teacherList.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(controller.teacherList[index]),
+                        subtitle: Text(
+                            'Teacher id: ${controller.teacherId[index]}'),
+                        trailing: IconButton(
+                          icon: const Icon(Icons.edit),
+                          onPressed: () async {
+
+                            _showEditTeacherModal(context, index);
+                          },
+                        ),
+                      );
+                    },
+                  );
+                }
+              }),
+            )
+                : const SizedBox.shrink()),
           ],
         ),
       ),
     );
   }
+
+  void _showEditTeacherModal(BuildContext context, int index) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: EditTeacherModal(index: index),
+      ),
+    );
+  }
 }
+
+class EditTeacherModal extends StatefulWidget {
+  final int index;
+
+  const EditTeacherModal({super.key, required this.index});
+
+  @override
+  State<EditTeacherModal> createState() => _EditStudentModalState();
+}
+
+final UpdateTeacherController controller = Get.find<UpdateTeacherController>();
+
+class _EditStudentModalState extends State<EditTeacherModal> {
+  @override
+  void initState() {
+
+    controller.nameController.text = controller.teacherList[widget.index];
+    controller.teacherIdController.text = controller.teacherId[widget.index].toString();
+
+
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text(
+            'Edit Teacher Name',
+            style: TextStyle(
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: controller.nameController,
+            decoration: const InputDecoration(
+              labelText: 'Teacher Name',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Textform field for roll number
+          TextField(
+            controller: controller.teacherIdController,
+            decoration: const InputDecoration(
+              labelText: 'Teacher Id',
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+          const SizedBox(height: 20),
+          const Text('New Subjects'),
+
+          Obx(
+                () => DropdownSearch<String>.multiSelection(
+              items: controller.subjectsList.toList(), // Use fetched subjects
+              dropdownBuilder: (context, selectedItems) {
+                return Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: selectedItems
+                      .map((item) => Chip(label: Text(item)))
+                      .toList(),
+                );
+              },
+              popupProps: PopupPropsMultiSelection.menu(
+                itemBuilder: (context, item, isSelected) {
+                  return ListTile(
+                    title: Text(item),
+                    selected: isSelected,
+                  );
+                },
+              ),
+              onChanged: (List<String> value) {
+                controller.fetchallSubjects();
+                List<int> selectedIds =
+                value.map((String item) => int.parse(item)).toList();
+                controller.selectedSubjectIds.value = selectedIds;
+              },
+              selectedItems: controller.selectedSubjectIds
+                  .map((id) => id.toString())
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+          const SizedBox(height: 20),
+          const Text('Remove Subjects'),
+          Obx(
+                () => DropdownSearch<String>.multiSelection(
+              items: controller.subjectsList.toList(), // Use fetched subjects
+              dropdownBuilder: (context, selectedItems) {
+                return Wrap(
+                  spacing: 8.0,
+                  runSpacing: 8.0,
+                  children: selectedItems
+                      .map((item) => Chip(label: Text(item)))
+                      .toList(),
+                );
+              },
+              popupProps: PopupPropsMultiSelection.menu(
+                itemBuilder: (context, item, isSelected) {
+                  return ListTile(
+                    title: Text(item),
+                    selected: isSelected,
+                  );
+                },
+              ),
+              onChanged: (List<String> value) {
+                controller.fetchallSubjects();
+                List<int> selectedIds =
+                value.map((String item) => int.parse(item)).toList();
+                controller.selectedSubjectIds.value = selectedIds;
+              },
+              selectedItems: controller.selectedSubjectIds
+                  .map((id) => id.toString())
+                  .toList(),
+            ),
+          ),
+          const SizedBox(height: 20),
+
+
+
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () async {
+              await controller.updatedTeacher();
+            },
+            child: const Text('Save'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+
+
+
+
+
+
+

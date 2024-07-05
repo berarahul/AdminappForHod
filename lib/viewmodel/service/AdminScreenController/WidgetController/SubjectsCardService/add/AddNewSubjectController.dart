@@ -1,10 +1,7 @@
-
-
-
-
 import 'dart:convert';
 import 'package:attendanceadmin/constant/AppUrl/SubjectCard/SubjectCardApi.dart';
 import 'package:get/get.dart';
+import 'package:get/get_rx/get_rx.dart';
 import '../../../../../../constant/AppUrl/StudentCard/StudentCardApi.dart';
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
 import '../../../../../../model/LoginModel.dart';
@@ -13,15 +10,12 @@ import '../../../../LoginService/AutharizationHeader.dart';
 
 class AddSubjectController extends GetxController {
   final AuthService authService = AuthService();
-  var teacherName = ''.obs;
-  var userName = ''.obs;
-  var password = ''.obs;
-  var confirmPassword = ''.obs;
+  RxString subjectName = ''.obs;
+  Rx<int?> semesterId = Rx<int?>(null);
   var departmentIdList = <int>[].obs;
   Rx<int?> selectedDepartmentId = Rx<int?>(null);
+  Rx<int?> subId = Rx<int?>(null);
 
-  RxList<String> subjectsList = <String>[].obs;
-  RxList<int> selectedSubjectIds = <int>[].obs;
 
   @override
   void onInit() {
@@ -30,21 +24,18 @@ class AddSubjectController extends GetxController {
   }
 
   // Setters for observable properties
-  void setTeacherName(String value) {
-    teacherName.value = value;
+  void setSubjectName(String value) {
+    subjectName.value = value;
   }
 
-  void setUserName(String value) {
-    userName.value = value;
+  void setSemesterId(int? value) {
+    semesterId.value = value;
   }
 
-  void setPassword(String value) {
-    password.value = value;
+  void setSubId(int? value) {
+    subId.value = value;
   }
 
-  void setConfirmPassword(String value) {
-    confirmPassword.value = value;
-  }
 
   void setSelectedDepartmentId(int? value) {
     selectedDepartmentId.value = value;
@@ -66,49 +57,12 @@ class AddSubjectController extends GetxController {
       }
     }
   }
-  Future<void> fetchallSubjects() async {
-    try {
-      if (selectedDepartmentId.value == null) {
-        print('Error: Selected department ID is null');
-        return;
-      }
-
-      String endpoint =
-          "${StudentCardApi.departmentListEndPoint}/${Subjectcardapi.subjectEndPoint}/${selectedDepartmentId.value}";
-
-      var response =
-      await ApiHelper.get(endpoint, headers: await ApiHelper().getHeaders());
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decodedData = jsonDecode(response.body);
-
-        if (decodedData.containsKey('subjects') &&
-            decodedData['subjects'] is List) {
-          List<dynamic> subjectsListResponse = decodedData['subjects'];
-
-          subjectsList.clear();
-
-          subjectsListResponse.forEach((subject) {
-            String subjectId = subject['subjectId'].toString(); // Assuming subjectId is an int
-            subjectsList.add(subjectId);
-          });
-        } else {
-          print(
-              'Error: Invalid response format - subjects key not found or not a list');
-        }
-      } else {
-        print('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching subjects: $e');
-    }
-  }
 
   Future<void> submit() async {
-    if (teacherName.value.isNotEmpty &&
-        userName.value.isNotEmpty &&
-        password.value != 0 &&
-        confirmPassword.value != 0 &&
+    if (subjectName.value.isNotEmpty &&
+        semesterId.value!=0 &&
+        subId.value != 0 &&
+
         selectedDepartmentId.value != 0) {
       // get token from AuthService
       final String? token = authService.getToken();
@@ -123,16 +77,19 @@ class AddSubjectController extends GetxController {
 
         // Json body for the API request
         final Map<String, dynamic> body = {
-          'name': teacherName.value,
-          'userName': userName.value,
-          'password': password.value,
-          'confirmPassword': confirmPassword.value,
-          'deptId': selectedDepartmentId.value,
+
+
+
+          "name": subjectName.value,
+          "deptId": selectedDepartmentId.value,
+          "semesterId": semesterId.value,
+          "subId": subId.value,
+
         };
 
         // Post request to add student
         await ApiHelper.post(
-          Teachercardapi.createTeacherEndpoint,
+          Subjectcardapi.subjectCreateEndpoint,
           headers: headers,
           body: body,
         );
@@ -156,15 +113,10 @@ class AddSubjectController extends GetxController {
   }
 
   void clear() {
-    teacherName.value = '';
-    userName.value = '';
-    password.value = '';
-    confirmPassword.value = '';
-
+    subjectName.value = '';
+    subId.value = null;
+    semesterId.value = null;
     selectedDepartmentId.value = null;
-
-
-
 
   }
 
