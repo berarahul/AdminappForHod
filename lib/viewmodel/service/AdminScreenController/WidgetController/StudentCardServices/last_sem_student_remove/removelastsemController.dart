@@ -75,16 +75,15 @@ class RemoveStudentControllerFromLastSem extends GetxController {
         headers: await ApiHelper().getHeaders(),
       );
 
-      if (response.statusCode != 200) {
-        return;
-      } else {
-        // Add this line to debug
+      if (response.statusCode == 200) {
         final List<dynamic> bodyDecode = jsonDecode(response.body);
 
         // Assuming you want to process each department
         for (var department in bodyDecode) {
           departmentIdList.add(department['id']);
         }
+      } else {
+        print('Error: ${response.statusCode}');
       }
     } else {
       return;
@@ -93,11 +92,13 @@ class RemoveStudentControllerFromLastSem extends GetxController {
   }
 
   FutureOr<void> fetchAllStudent() async {
-    await ApiHelper.get(
+    final data = await ApiHelper.get(
       "${StudentCardApi.studentListEndPoint}/$selectedDepartmentId/6",
       headers: await ApiHelper().getHeaders(),
-    ).then((value) {
-      final List<dynamic> bodyDecode = jsonDecode(value.body);
+    );
+
+    if (data.statusCode == 200) {
+      final List<dynamic> bodyDecode = jsonDecode(data.body);
 
       print(bodyDecode);
 
@@ -106,7 +107,9 @@ class RemoveStudentControllerFromLastSem extends GetxController {
 
         studentRollNumber.add(student['roll']);
       }
-    });
+    } else {
+      print('Error: ${data.statusCode}');
+    }
   }
 
   FutureOr<void> removeStudentFromLastSem() async {

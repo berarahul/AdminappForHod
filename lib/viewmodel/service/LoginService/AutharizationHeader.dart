@@ -32,6 +32,7 @@ class ApiHelper {
     Map<String, String>? headers,
   }) async {
     final Uri uri = Uri.parse(baseUrl + endpoint);
+
     return await http.get(uri, headers: headers);
   }
 
@@ -90,7 +91,9 @@ class ApiHelper {
   Future<List<DepartmentModel>> fetchDepartments() async {
     final UserModel? userModel = authService.getUserModel();
     final headers = await getHeaders();
-    final response = await get("${Teachercardapi.teacherEndPoint}/${userModel?.id}", headers: headers);
+    final response = await get(
+        "${Teachercardapi.teacherEndPoint}/${userModel?.id}",
+        headers: headers);
 
     if (response.statusCode == 200) {
       List<dynamic> jsonData = jsonDecode(response.body);
@@ -100,6 +103,3 @@ class ApiHelper {
     }
   }
 }
-
-
-
