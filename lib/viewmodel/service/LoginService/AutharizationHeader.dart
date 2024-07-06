@@ -1,8 +1,12 @@
 import 'dart:convert';
 import 'dart:developer';
 
+import 'package:attendanceadmin/constant/AppUrl/StudentCard/StudentCardApi.dart';
+import 'package:attendanceadmin/model/LoginModel.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
+import '../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
+import '../../../model/departmentModel.dart';
 import 'AuthServices.dart';
 
 class ApiHelper {
@@ -82,4 +86,20 @@ class ApiHelper {
 
     return response;
   }
+
+  Future<List<DepartmentModel>> fetchDepartments() async {
+    final UserModel? userModel = authService.getUserModel();
+    final headers = await getHeaders();
+    final response = await get("${Teachercardapi.teacherEndPoint}/${userModel?.id}", headers: headers);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+      return jsonData.map((item) => DepartmentModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load departments');
+    }
+  }
 }
+
+
+
