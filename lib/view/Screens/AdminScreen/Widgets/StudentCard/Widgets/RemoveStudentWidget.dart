@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../../constant/AppColors.dart';
+import '../../../../../../model/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/remove/RemoveStudentController.dart';
 
 class RemoveStudentModal extends StatelessWidget {
@@ -32,26 +33,57 @@ class RemoveStudentModal extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // Dropdown for selecting department id
+                // Obx(() {
+                //   return DropdownButton<int>(
+                //       alignment: Alignment.center,
+                //       hint: controller.departmentIdList.isEmpty
+                //           ? const Center(child: CircularProgressIndicator())
+                //           : const Text('Select Department'),
+                //       borderRadius: BorderRadius.circular(8),
+                //       isExpanded: true,
+                //       value: controller.selectedDepartmentId.value,
+                //       onChanged: (newValue) {
+                //         // Update the selectedDepartmentId with the new value
+                //         controller.selectedDepartmentId.value = newValue!;
+                //       },
+                //       items: controller.departmentIdList.map((departmentId) {
+                //         return DropdownMenuItem<int>(
+                //           value: departmentId,
+                //           child: Text(departmentId.toString()),
+                //         );
+                //       }).toList());
+                // }),
+
+
+
                 Obx(() {
-                  return DropdownButton<int>(
-                      alignment: Alignment.center,
-                      hint: controller.departmentIdList.isEmpty
-                          ? const Center(child: CircularProgressIndicator())
-                          : const Text('Select Department'),
-                      borderRadius: BorderRadius.circular(8),
-                      isExpanded: true,
-                      value: controller.selectedDepartmentId.value,
-                      onChanged: (newValue) {
-                        // Update the selectedDepartmentId with the new value
-                        controller.selectedDepartmentId.value = newValue!;
-                      },
-                      items: controller.departmentIdList.map((departmentId) {
+                  if (controller.departments.isEmpty) {
+                    return const CircularProgressIndicator();
+                  } else {
+                    return DropdownButtonFormField<int>(
+                      items: controller.departments.map((DepartmentModel department) {
                         return DropdownMenuItem<int>(
-                          value: departmentId,
-                          child: Text(departmentId.toString()),
+                          value: department.id,
+                          child: Text(department.departmentName),
                         );
-                      }).toList());
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          controller.setDepartmentId(value);
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'Department',
+                        border: OutlineInputBorder(),
+                      ),
+                      value: controller.departmentId.value == 0
+                          ? null
+                          : controller.departmentId.value,
+                    );
+                  }
                 }),
+
+
 
                 const SizedBox(height: 20),
 
