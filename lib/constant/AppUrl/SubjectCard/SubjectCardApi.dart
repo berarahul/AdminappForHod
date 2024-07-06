@@ -3,12 +3,13 @@ class Subjectcardapi {
 
   static const String subjectEndPoint = 'subjects';
 
+  static const String subjectCreateEndpoint = "hod/subject/addSubject";
 
-  static const String subjectCreateEndpoint="hod/subject/addSubject";
+  static const String subjectDeleteEndpoint = "hod/subject/deleteSubject";
 
-  static const String subjectDeleteEndpoint="hod/subject/deleteSubject";
+  static const String subjectUpdateEndpoint = "hod/subject/updateSubject";
 
-  static const String subjectUpdateEndpoint="hod/subject/updateSubject";
+  static const String subjectViewEndpoint = "dept/subjects";
 
-  static const String subjectViewEndpoint="dept/subjects";
+  static const String subjectRemoveEndpoint = "hod/subject/deleteSubject";
 }

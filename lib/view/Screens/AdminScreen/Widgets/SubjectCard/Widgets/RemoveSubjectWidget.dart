@@ -17,7 +17,7 @@ class RemoveSubjectModal extends StatelessWidget {
         height: MediaQuery.of(context).size.height,
         child: Padding(
           padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+              EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
           child: Container(
             padding: const EdgeInsets.all(16.0),
             child: Column(
@@ -87,16 +87,6 @@ class RemoveSubjectModal extends StatelessWidget {
                     return Expanded(
                       child: Column(
                         children: [
-                          TextField(
-                            onChanged: (value) {
-                              controller.filterSearchResults(value);
-                            },
-                            decoration: const InputDecoration(
-                              labelText: 'Search Subjects',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
-                          const SizedBox(height: 20),
                           //Todo: Need to impl this
                           // Row(
                           //   children: [
@@ -112,29 +102,44 @@ class RemoveSubjectModal extends StatelessWidget {
                           // const SizedBox(height: 20),
                           Obx(() {
                             return Expanded(
-                                child: controller.subjects.isEmpty
+                                child: controller.subjectslistmodel.value ==
+                                            null ||
+                                        controller.subjectslistmodel.value!
+                                            .subjects!.isEmpty
                                     ? const Center(
-                                    child: CircularProgressIndicator())
+                                        child: CircularProgressIndicator())
                                     : ListView.builder(
-                                  itemCount: controller.subjects.length,
-                                  itemBuilder: (context, index) {
-                                    return Obx(() {
-                                      return CheckboxListTile(
-                                        value: controller.selectedSubjects
-                                            .contains(
-                                          controller.subjects[index],
-                                        ),
-                                        onChanged: (value) {
-                                          controller.toggleIsUserSelected(
-                                            index: index,
-                                          );
+                                        itemCount: controller.subjectslistmodel
+                                            .value!.subjects!.length,
+                                        itemBuilder: (context, index) {
+                                          return Obx(() {
+                                            return ListTile(
+                                              title: Text(
+                                                controller
+                                                    .subjectslistmodel
+                                                    .value!
+                                                    .subjects![index]
+                                                    .subName!,
+                                              ),
+                                              trailing: Checkbox(
+                                                value: controller
+                                                        .selectedSubject
+                                                        .value ==
+                                                    controller
+                                                        .subjectslistmodel
+                                                        .value!
+                                                        .subjects![index]
+                                                        .subjectId!,
+                                                onChanged: (value) {
+                                                  controller.addOrRemoveStudent(
+                                                    index: index,
+                                                  );
+                                                },
+                                              ),
+                                            );
+                                          });
                                         },
-                                        title: Text(
-                                            controller.subjects[index]),
-                                      );
-                                    });
-                                  },
-                                ));
+                                      ));
                           }),
                           const SizedBox(height: 20),
                           ElevatedButton(

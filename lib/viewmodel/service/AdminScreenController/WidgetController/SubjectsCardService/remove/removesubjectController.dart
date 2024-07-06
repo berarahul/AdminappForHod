@@ -11,6 +11,8 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import 'package:get_storage/get_storage.dart';
 
+import '../../../../../../model/subjectsListModel.dart';
+
 // Controller class for removing students, utilizing GetX for state management.
 class RemoveSubjectController extends GetxController {
   // Instance of the authentication service.
@@ -27,28 +29,12 @@ class RemoveSubjectController extends GetxController {
   Rx<int?> selectedDepartmentId = Rx<int?>(null);
   // Observable for tracking the selected semester. Initially null.
   Rx<int?> selectedSemester = Rx<int?>(null);
-  // Observable list of all students. Initially empty.
-  RxList subjects = [].obs;
-  // Observable list of student roll numbers. Initially empty.
-  RxList<int> subjectId = <int>[].obs;
-  // Observable list of students filtered by search query. Initially empty.
-  RxList filteredSubjects = [].obs;
-  // Observable list of selected students for removal. Initially empty.
-  RxList selectedSubjects = [].obs;
 
+  Rx<int> selectedSubject = 0.obs;
 
-  RxList<String> subjectsList = <String>[].obs;
-  RxList<int> selectedSubjectIds = <int>[].obs;
+  Rx<Subjectslistmodel?> subjectslistmodel = Subjectslistmodel().obs;
 
-
-  void toggleIsUserSelected({required int index}) {
-    var subject = subjects[index];
-    if (selectedSubjects.contains(subject)) {
-      selectedSubjects.remove(subject);
-    } else {
-      selectedSubjects.add(subject);
-    }
-  }
+  void toggleIsUserSelected({required int index}) {}
 
   // Fetches students from a simulated API based on the selected semester.
   void fetchStudents(int semester) {
@@ -56,69 +42,35 @@ class RemoveSubjectController extends GetxController {
     Future.delayed(const Duration(seconds: 1), () {
       // Simulated data for demonstration. Replace with actual API call.
       if (semester == 0) {
-        subjects.clear();
       } else if (semester == 1) {
-        subjects.clear();
-
         fetchallSubjects();
       } else if (semester == 2) {
-        subjects.clear();
-
-        //
         fetchallSubjects();
       } else if (semester == 3) {
-        subjects.clear();
-
-        //
         fetchallSubjects();
       } else if (semester == 4) {
-        subjects.clear();
+        fetchallSubjects();
       } else if (semester == 5) {
-        subjects.clear();
+        fetchallSubjects();
       } else if (semester == 6) {
-        subjects.clear();
         fetchallSubjects();
       }
-      // Initially, all fetched students are considered as filtered.
-      filteredSubjects.assignAll(subjects);
     });
   }
 
-  // Filters the student list based on a search query.
-  void filterSearchResults(String query) {
-    // If query is empty, all students are shown.
-    if (query.isEmpty) {
-      filteredSubjects.assignAll(subjects);
-    } else {
-      // Converts query to lowercase for case-insensitive search.
-      final lowercaseQuery = query.toLowerCase();
-      // Filters students based on the query.
-      filteredSubjects.assignAll(subjects
-          .where((student) => student.toLowerCase().contains(lowercaseQuery)));
-    }
-  }
-
-  // Selects or deselects all students based on the given boolean value.
-  void selectAllStudents(bool selectAll) {
-    if (selectAll) {
-      // Selects all students if true.
-      selectedSubjects.assignAll(filteredSubjects);
-    } else {
-      // Clears selection if false.
-      selectedSubjects.clear();
-    }
-  }
-
   // Adds or removes a student from the selected list based on a boolean value.
-  void addOrRemoveStudent(String student, bool selected) {
-    if (selected) {
-      // Adds the student to the selected list if not already present.
-      if (!selectedSubjects.contains(student)) {
-        selectedSubjects.add(student);
+  void addOrRemoveStudent({required int index}) {
+    if (subjectslistmodel.value != null) {
+      // If the student is already selected, remove them.
+      if (selectedSubject.value ==
+          subjectslistmodel.value!.subjects![index].subjectId!) {
+        selectedSubject.value = 0;
       }
-    } else {
-      // Removes the student from the selected list.
-      selectedSubjects.remove(student);
+      // Otherwise, add them to the selected list.
+      else {
+        selectedSubject.value =
+            subjectslistmodel.value!.subjects![index].subjectId!;
+      }
     }
   }
 
@@ -147,72 +99,33 @@ class RemoveSubjectController extends GetxController {
       return;
     }
   }
-  //
-  // FutureOr<void> fetchAllStudent() async {
-  //   if (selectedSemester.value != null) {
-  //     await ApiHelper.get(
-  //       "${Subjectcardapi.subjectViewEndpoint}/$selectedDepartmentId",
-  //       headers: await ApiHelper().getHeaders(),
-  //     ).then((value) {
-  //       final List<dynamic> bodyDecode = jsonDecode(value.body);
-  //
-  //       for (var student in bodyDecode) {
-  //         students.add(student['name']);
-  //
-  //         studentRollNumber.add(student['roll']);
-  //       }
-  //     });
-  //   } else {
-  //     Get.snackbar(
-  //       "Error",
-  //       "please select the semester",
-  //     );
-  //   }
-  // }
-
-
 
   Future<void> fetchallSubjects() async {
     try {
       if (selectedDepartmentId.value == null) {
-        print('Error: Selected department ID is null');
         return;
       }
-
       String endpoint =
           "${StudentCardApi.departmentListEndPoint}/${Subjectcardapi.subjectEndPoint}/${selectedDepartmentId.value}";
-
       var response = await ApiHelper.get(endpoint,
           headers: await ApiHelper().getHeaders());
-
       if (response.statusCode == 200) {
-        Map<String, dynamic> decodedData = jsonDecode(response.body);
-
-        if (decodedData.containsKey('subjects') &&
-            decodedData['subjects'] is List) {
-          List<dynamic> subjectsListResponse = decodedData['subjects'];
-
-          subjectsList.clear();
-
-          for (var subject in subjectsListResponse) {
-            String subjectId =
-            subject['subjectId'].toString(); // Assuming subjectId is an int
-            subjectsList.add(subjectId);
-          }
+        final decodedData = jsonDecode(response.body);
+        // Check if decodedData is not null and properly formatted before assigning
+        if (decodedData != null && decodedData is Map<String, dynamic>) {
+          subjectslistmodel.value = Subjectslistmodel.fromJson(decodedData);
         } else {
-          print(
-              'Error: Invalid response format - subjects key not found or not a list');
+          // Assign a default value or handle the null case
+          subjectslistmodel.value = Subjectslistmodel();
         }
       } else {
-        print('Error: ${response.statusCode}');
+        print(
+            'Error: Invalid response format - subjects key not found or not a list');
       }
     } catch (e) {
       print('Error fetching subjects: $e');
     }
   }
-
-
-
 
   // Removes the selected students. Placeholder for actual removal logic.
   Future<void> removeSelectedSubjects() async {
@@ -222,24 +135,36 @@ class RemoveSubjectController extends GetxController {
     // If userModel is not null, proceed with removal logic.
     if (userModel != null) {
       // Print the user model data.
-      await ApiHelper.delete(StudentCardApi.removeStudentEndPoint,
-          headers: await ApiHelper().getHeaders(),
-          body: {
-            // "semester": selectedSemester.value,
-            // "deptId": selectedDepartmentId.value,
-            // "rolls": studentRollNumber,
-
-            "departmentName": selectedDepartmentId.value,
-            "subjectId": selectedSubjects.value,
-            "semester": selectedSemester.value,
-
-          });
-
-      //Show a snackbar message to indicate successful removal.
-      Get.snackbar(
-        "Success",
-        "Selected students have been removed",
+      final resposne = await ApiHelper.delete(
+        "${Subjectcardapi.subjectDeleteEndpoint}?deptId=${selectedDepartmentId.value}&subjectId=${selectedSubject.value}",
+        headers: await ApiHelper().getHeaders(),
       );
+
+      if (resposne.statusCode == 200) {
+        Get.snackbar(
+          "Success",
+          "Subject Removed Successfully",
+        );
+
+        // Clear the selected students list.
+        selectedSubject.value = 0;
+
+        // Update the list of students.
+        await fetchallSubjects();
+      } else {
+        Get.snackbar(
+          "Error",
+          "Failed to remove subject",
+        );
+
+        // Print an error message if the response code is not 200.
+        print('Error: Failed to remove subject - ${resposne.statusCode}');
+
+        print('Error: Failed to remove subject - ${resposne.body}');
+
+        print(
+            "final url: ${Subjectcardapi.subjectDeleteEndpoint}?deptId=${selectedDepartmentId.value}&subjectId=${selectedSubject.value}");
+      }
     } else {
       // Print an error message if userModel is null.
       Get.snackbar(
@@ -250,8 +175,6 @@ class RemoveSubjectController extends GetxController {
   }
 
   Future<void> updateList() async {
-    subjects.clear();
-    selectedSubjects.clear();
     await fetchallSubjects();
   }
 

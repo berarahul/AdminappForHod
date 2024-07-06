@@ -8,7 +8,7 @@ class Updatesubjectcontroller extends GetxController {
     'Semester 2': ['Bengali', 'English'],
     'Semester 3': ['Automata', 'Computer Network']
   }.obs;
-  var filteredSubjects = <String>[].obs; // Use a simple list instead of Map
+  var filteredSubjects = <String>[].obs;
   var searchQuery = ''.obs;
 
   @override
@@ -34,7 +34,8 @@ class Updatesubjectcontroller extends GetxController {
       filteredSubjects.assignAll(subjects[selectedSemester.value]!);
     } else {
       filteredSubjects.assignAll(subjects[selectedSemester.value]!
-          .where((student) => student.toLowerCase().contains(query.toLowerCase()))
+          .where(
+              (student) => student.toLowerCase().contains(query.toLowerCase()))
           .toList());
     }
   }
