@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../../constant/AppColors.dart';
+import '../../../../../../model/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/add/AddStudentWidgetController.dart';
 
 class AddStudentModal extends StatelessWidget {
@@ -60,18 +61,8 @@ class AddStudentModal extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          TextField(
-            keyboardType: TextInputType.number,
-            textInputAction: TextInputAction.next,
-            onChanged: (value) {
-              controller.setDepartmentId(int.parse(value));
-            },
-            decoration: const InputDecoration(
-              labelText: 'Department ID',
-              border: OutlineInputBorder(),
-            ),
-          ),
-          const SizedBox(height: 20),
+
+
           TextField(
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
@@ -83,6 +74,37 @@ class AddStudentModal extends StatelessWidget {
               border: OutlineInputBorder(),
             ),
           ),
+          const SizedBox(height: 20),
+
+
+          Obx(() {
+            if (controller.departments.isEmpty) {
+              return const CircularProgressIndicator();
+            } else {
+              return DropdownButtonFormField<int>(
+                items: controller.departments.map((DepartmentModel department) {
+                  return DropdownMenuItem<int>(
+                    value: department.id,
+                    child: Text(department.departmentName),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    controller.setDepartmentId(value);
+                  }
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Department',
+                  border: OutlineInputBorder(),
+                ),
+                value: controller.departmentId.value == 0
+                    ? null
+                    : controller.departmentId.value,
+              );
+            }
+          }),
+
+
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async => await controller.submit(),
