@@ -100,46 +100,40 @@ class RemoveSubjectModal extends StatelessWidget {
                           //   ],
                           // ),
                           // const SizedBox(height: 20),
+
                           Obx(() {
+                            // Ensure subjectslistmodel.value and subjectslistmodel.value.subjects are not null
+                            var subjectsListModel =
+                                controller.subjectslistmodel.value;
+                            var subjects = subjectsListModel?.subjects ?? [];
+
                             return Expanded(
-                                child: controller.subjectslistmodel.value ==
-                                            null ||
-                                        controller.subjectslistmodel.value!
-                                            .subjects!.isEmpty
-                                    ? const Center(
-                                        child: CircularProgressIndicator())
-                                    : ListView.builder(
-                                        itemCount: controller.subjectslistmodel
-                                            .value!.subjects!.length,
-                                        itemBuilder: (context, index) {
-                                          return Obx(() {
-                                            return ListTile(
-                                              title: Text(
-                                                controller
-                                                    .subjectslistmodel
-                                                    .value!
-                                                    .subjects![index]
-                                                    .subName!,
-                                              ),
-                                              trailing: Checkbox(
-                                                value: controller
-                                                        .selectedSubject
-                                                        .value ==
-                                                    controller
-                                                        .subjectslistmodel
-                                                        .value!
-                                                        .subjects![index]
-                                                        .subjectId!,
-                                                onChanged: (value) {
-                                                  controller.addOrRemoveStudent(
-                                                    index: index,
-                                                  );
-                                                },
-                                              ),
-                                            );
-                                          });
-                                        },
-                                      ));
+                              child: subjects.isEmpty
+                                  ? const Center(
+                                      child: CircularProgressIndicator())
+                                  : ListView.builder(
+                                      itemCount: subjects.length,
+                                      itemBuilder: (context, index) {
+                                        var subject = subjects[index];
+                                        // Assuming selectedSubject is a nullable type, no need for null check operator
+                                        bool isSelected =
+                                            controller.selectedSubject.value ==
+                                                subject.subjectId;
+
+                                        return ListTile(
+                                          title: Text(subject.subName ??
+                                              'Unknown'), // Provide a default value for subName if null
+                                          trailing: Checkbox(
+                                            value: isSelected,
+                                            onChanged: (value) {
+                                              controller.addOrRemoveStudent(
+                                                  index: index);
+                                            },
+                                          ),
+                                        );
+                                      },
+                                    ),
+                            );
                           }),
                           const SizedBox(height: 20),
                           ElevatedButton(
