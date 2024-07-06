@@ -273,24 +273,6 @@
 //   }
 // }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 import 'dart:async';
 import 'dart:convert';
 
@@ -317,21 +299,19 @@ class RemoveStudentController extends GetxController {
 
   RxList<int> studentRollNumber = <int>[].obs;
 
-  RxList filteredStudents = [].obs;
-
-  RxList selectedStudents = [].obs;
+  RxList<int> selectedStudents = <int>[].obs;
 
   var departments = <DepartmentModel>[].obs;
 
   final RxInt departmentId = 0.obs;
 
   void toggleIsUserSelected({required int index}) {
-    var studentRoll = studentRollNumber[index];
-    if (selectedStudents.contains(studentRoll)) {
-      selectedStudents.remove(studentRoll);
+    if (selectedStudents.contains(studentRollNumber[index])) {
+      selectedStudents.remove(studentRollNumber[index]);
     } else {
-      selectedStudents.add(studentRoll);
+      selectedStudents.add(studentRollNumber[index]);
     }
+
     print("Selected students: $selectedStudents");
   }
 
@@ -345,39 +325,7 @@ class RemoveStudentController extends GetxController {
     Future.delayed(const Duration(seconds: 1), () {
       students.clear();
       fetchAllStudent();
-      filteredStudents.assignAll(students);
     });
-  }
-
-  void filterSearchResults(String query) {
-    if (query.isEmpty) {
-      filteredStudents.assignAll(students);
-    } else {
-      final lowercaseQuery = query.toLowerCase();
-      filteredStudents.assignAll(
-          students.where((student) => student.toLowerCase().contains(lowercaseQuery)));
-    }
-    print("Filtered students: $filteredStudents");
-  }
-
-  void selectAllStudents(bool selectAll) {
-    if (selectAll) {
-      selectedStudents.assignAll(filteredStudents);
-    } else {
-      selectedStudents.clear();
-    }
-    print("Select all students: $selectAll, Selected students: $selectedStudents");
-  }
-
-  void addOrRemoveStudent(String student, bool selected) {
-    if (selected) {
-      if (!selectedStudents.contains(student)) {
-        selectedStudents.add(student);
-      }
-    } else {
-      selectedStudents.remove(student);
-    }
-    print("Added/Removed student: $student, Selected: $selected");
   }
 
   FutureOr<void> getDepartmentId() async {

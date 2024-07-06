@@ -54,14 +54,13 @@ class RemoveStudentModal extends StatelessWidget {
                 //       }).toList());
                 // }),
 
-
-
                 Obx(() {
                   if (controller.departments.isEmpty) {
                     return const CircularProgressIndicator();
                   } else {
                     return DropdownButtonFormField<int>(
-                      items: controller.departments.map((DepartmentModel department) {
+                      items: controller.departments
+                          .map((DepartmentModel department) {
                         return DropdownMenuItem<int>(
                           value: department.id,
                           child: Text(department.departmentName),
@@ -82,8 +81,6 @@ class RemoveStudentModal extends StatelessWidget {
                     );
                   }
                 }),
-
-
 
                 const SizedBox(height: 20),
 
@@ -118,9 +115,7 @@ class RemoveStudentModal extends StatelessWidget {
                       child: Column(
                         children: [
                           TextField(
-                            onChanged: (value) {
-                              controller.filterSearchResults(value);
-                            },
+                            onChanged: (value) {},
                             decoration: const InputDecoration(
                               labelText: 'Search Students',
                               border: OutlineInputBorder(),
@@ -152,7 +147,8 @@ class RemoveStudentModal extends StatelessWidget {
                                             return CheckboxListTile(
                                               value: controller.selectedStudents
                                                   .contains(
-                                                controller.students[index],
+                                                controller
+                                                    .studentRollNumber[index],
                                               ),
                                               onChanged: (value) {
                                                 controller.toggleIsUserSelected(

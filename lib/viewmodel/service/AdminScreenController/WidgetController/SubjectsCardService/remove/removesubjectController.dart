@@ -60,18 +60,18 @@ class RemoveSubjectController extends GetxController {
 
   // Adds or removes a student from the selected list based on a boolean value.
   void addOrRemoveStudent({required int index}) {
-    if (subjectslistmodel.value != null) {
-      // If the student is already selected, remove them.
-      if (selectedSubject.value ==
-          subjectslistmodel.value!.subjects![index].subjectId!) {
-        selectedSubject.value = 0;
-      }
-      // Otherwise, add them to the selected list.
-      else {
-        selectedSubject.value =
-            subjectslistmodel.value!.subjects![index].subjectId!;
-      }
+    // If the student is already selected, remove them.
+    if (selectedSubject.value ==
+        subjectslistmodel.value!.subjects![index].subjectId!) {
+      selectedSubject.value = 0;
     }
+    // Otherwise, add them to the selected list.
+    else {
+      selectedSubject.value =
+          subjectslistmodel.value!.subjects![index].subjectId!;
+    }
+
+    print('Selected Subject: ${selectedSubject.value}');
   }
 
   FutureOr<void> getDepartmentId() async {
@@ -140,11 +140,17 @@ class RemoveSubjectController extends GetxController {
         headers: await ApiHelper().getHeaders(),
       );
 
+      print(
+          "final url: ${Subjectcardapi.subjectDeleteEndpoint}?deptId=${selectedDepartmentId.value}&subjectId=${selectedSubject.value}");
+
       if (resposne.statusCode == 200) {
         Get.snackbar(
           "Success",
           "Subject Removed Successfully",
         );
+
+        // clear the model
+        subjectslistmodel.value = Subjectslistmodel();
 
         // Clear the selected students list.
         selectedSubject.value = 0;

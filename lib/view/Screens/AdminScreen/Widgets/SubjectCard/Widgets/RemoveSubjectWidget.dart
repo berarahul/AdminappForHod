@@ -115,22 +115,21 @@ class RemoveSubjectModal extends StatelessWidget {
                                       itemCount: subjects.length,
                                       itemBuilder: (context, index) {
                                         var subject = subjects[index];
-                                        // Assuming selectedSubject is a nullable type, no need for null check operator
-                                        bool isSelected =
-                                            controller.selectedSubject.value ==
-                                                subject.subjectId;
 
-                                        return ListTile(
-                                          title: Text(subject.subName ??
-                                              'Unknown'), // Provide a default value for subName if null
-                                          trailing: Checkbox(
-                                            value: isSelected,
-                                            onChanged: (value) {
-                                              controller.addOrRemoveStudent(
-                                                  index: index);
-                                            },
-                                          ),
-                                        );
+                                        return Obx(() => ListTile(
+                                              title: Text(subject.subName ??
+                                                  'Unknown'), // Provide a default value for subName if null
+                                              trailing: Checkbox(
+                                                value: controller
+                                                        .selectedSubject
+                                                        .value ==
+                                                    subject.subjectId,
+                                                onChanged: (value) {
+                                                  controller.addOrRemoveStudent(
+                                                      index: index);
+                                                },
+                                              ),
+                                            ));
                                       },
                                     ),
                             );
@@ -139,8 +138,6 @@ class RemoveSubjectModal extends StatelessWidget {
                           ElevatedButton(
                             onPressed: () async {
                               await controller.removeSelectedSubjects();
-
-                              await controller.updateList();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,
