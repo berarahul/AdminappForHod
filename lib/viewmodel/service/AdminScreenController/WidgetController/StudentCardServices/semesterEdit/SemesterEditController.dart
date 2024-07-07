@@ -9,6 +9,7 @@ import 'dart:convert';
 
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
 import '../../../../../../model/LoginModel.dart';
+import '../../../../../../model/departmentModel.dart';
 
 class SemesterController extends GetxController {
   final AuthService authService = AuthService();
@@ -20,6 +21,24 @@ class SemesterController extends GetxController {
 
   final RxList<int> departmentIdList = <int>[].obs;
   final RxList<int> semesterNumberList = List<int>.generate(5, (index) => index + 1).obs; // Populate with 1 to 5
+
+  final RxInt departmentId = 0.obs;
+  var departments = <DepartmentModel>[].obs;
+
+  Future<void> fetchDepartments() async {
+    try {
+      var fetchedDepartments = await ApiHelper().fetchDepartments();
+      departments.assignAll(fetchedDepartments);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load departments');
+    }
+  }
+
+  void setDepartmentId(int department) {
+    departmentId.value = department;
+  }
+
+
 
   FutureOr<void> getDepartmentId() async {
     final UserModel? userModel = authService.getUserModel();
@@ -34,9 +53,9 @@ class SemesterController extends GetxController {
       } else {
         final List<dynamic> bodyDecode = jsonDecode(response.body);
 
-        for (var department in bodyDecode) {
-          departmentIdList.add(department['id']);
-        }
+        // for (var department in bodyDecode) {
+        //   departmentIdList.add(department['id']);
+        // }
       }
     } else {
       return;
@@ -46,9 +65,9 @@ class SemesterController extends GetxController {
 
   Future<void> addSemester() async {
     final name = semesterNameController.text.trim();
-    if (name.isNotEmpty && selectedDepartmentId.value != null) {
+    if (name.isNotEmpty && departmentId.value != null) {
       await ApiHelper.update(
-        "${StudentCardApi.addSemesterEndPoint}?sem=$name&deptId=${selectedDepartmentId.value}",
+        "${StudentCardApi.addSemesterEndPoint}?sem=$name&deptId=${departmentId.value}",
         headers: await ApiHelper().getHeaders(),
       );
     } else {
@@ -65,6 +84,7 @@ class SemesterController extends GetxController {
   @override
   void onInit() {
     getDepartmentId();
+    fetchDepartments();
     super.onInit();
   }
 }

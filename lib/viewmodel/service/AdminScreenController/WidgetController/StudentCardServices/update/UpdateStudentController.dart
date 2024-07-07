@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import '../../../../../../constant/AppUrl/StudentCard/StudentCardApi.dart';
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
 import '../../../../../../model/LoginModel.dart';
+import '../../../../../../model/departmentModel.dart';
 import '../../../../LoginService/AutharizationHeader.dart';
 
 class UpdateStudentController extends GetxController {
@@ -18,17 +19,53 @@ class UpdateStudentController extends GetxController {
   TextEditingController rollController = TextEditingController();
 
   final AuthService authService = AuthService();
-
+  final RxInt departmentId = 0.obs;
+  var departments = <DepartmentModel>[].obs;
   Rx<int?> selectedDepartment = Rx<int?>(null);
 
   Rx<int?> selectedSemester = Rx<int?>(null);
 
   RxList<int> departmentIdList = <int>[].obs;
-  RxList<int> semestersList = <int>[1, 2, 3, 4, 5, 6].obs;
+  RxList<int> semestersList = [1, 2, 3, 4, 5, 6].obs;
 
-  RxList<String> studentsList = <String>[].obs;
+  RxList studentsList = [].obs;
 
   RxList<int> studentRollNumber = <int>[].obs;
+
+
+
+
+
+
+  Future<void> fetchDepartments() async {
+    try {
+      var fetchedDepartments = await ApiHelper().fetchDepartments();
+      departments.assignAll(fetchedDepartments);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load departments');
+    }
+  }
+
+
+
+
+
+
+
+
+  void fetchStudents(int semester) {
+    print("Fetching students for semester: $semester");
+    Future.delayed(const Duration(seconds: 1), () {
+      studentsList.clear();
+      fetchAllStudent();
+    });
+  }
+
+
+
+
+
+
 
   FutureOr<void> getDepartmentId() async {
     //
@@ -47,31 +84,39 @@ class UpdateStudentController extends GetxController {
         final List<dynamic> bodyDecode = jsonDecode(response.body);
 
         // Assuming you want to process each department
-        for (var department in bodyDecode) {
-          departmentIdList.add(department['id']);
-        }
+        // for (var department in bodyDecode) {
+        //   departmentIdList.add(department['id']);
+        // }
       }
     } else {
       return;
     }
     return null;
   }
+  void setDepartmentId(int department) {
+    departmentId.value = department;
+  }
 
   FutureOr<void> fetchAllStudent() async {
+    print("fetching all students");
     if (studentsList.isNotEmpty) {
       studentsList.clear();
+      print("if part");
     } else {
+      print("else part");
       if (selectedSemester.value != null) {
+        print(selectedSemester.value);
         await ApiHelper.get(
-          "${StudentCardApi.studentListEndPoint}/$selectedDepartment/$selectedSemester",
+          "${StudentCardApi.studentListEndPoint}/$departmentId/$selectedSemester",
           headers: await ApiHelper().getHeaders(),
         ).then((value) {
           final List<dynamic> bodyDecode = jsonDecode(value.body);
-
+print(bodyDecode);
           for (var student in bodyDecode) {
             studentsList.add(student['name']);
-
+ print(studentsList);
             studentRollNumber.add(student['roll']);
+            print(studentRollNumber);
           }
         });
       } else {
@@ -120,6 +165,7 @@ class UpdateStudentController extends GetxController {
   @override
   void onInit() {
     getDepartmentId();
+    fetchDepartments();
     super.onInit();
   }
 }

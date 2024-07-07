@@ -47,7 +47,7 @@ class RemoveTeacherModel extends StatelessWidget {
                         controller.selectedDepartmentId.value = newValue!;
 
                         // Fetch all the teachers of the selected department
-
+                   // controller.teachers.clear();
                         controller.fetchAllTeachers();
                       },
                       items: controller.departmentIdList.map((departmentId) {

@@ -3,8 +3,8 @@ import 'package:get/get.dart';
 class SubjectController extends GetxController {
   var actions = [
     'Add new subject',
-    'Update subject',
     'Remove subject',
+    'Update subject',
 
   ].obs;
 

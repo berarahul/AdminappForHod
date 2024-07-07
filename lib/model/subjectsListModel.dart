@@ -21,6 +21,8 @@ class Subjectslistmodel {
       'subjects': subjects!.map((x) => x.toJson()).toList(),
     };
   }
+
+
 }
 
 class Subject {
@@ -58,3 +60,5 @@ class Subject {
     };
   }
 }
+
+

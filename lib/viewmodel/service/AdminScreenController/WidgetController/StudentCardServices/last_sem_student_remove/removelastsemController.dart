@@ -7,6 +7,7 @@ import 'package:get/get.dart';
 
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
 import '../../../../../../model/LoginModel.dart';
+import '../../../../../../model/departmentModel.dart';
 import '../../../../LoginService/AuthServices.dart';
 import '../../../../LoginService/AutharizationHeader.dart';
 
@@ -14,7 +15,6 @@ class RemoveStudentControllerFromLastSem extends GetxController {
   final AuthService authService = AuthService();
 
   // Observable list of department IDs. Initially null.
-  RxList departmentIdList = [].obs;
 
   RxList<String> students = <String>[].obs;
 
@@ -25,7 +25,28 @@ class RemoveStudentControllerFromLastSem extends GetxController {
   RxList<int> selectedStudentRollNumber = <int>[].obs;
 
   // Observable for tracking the selected department ID. Initially null.
-  Rx<int?> selectedDepartmentId = Rx<int?>(null);
+
+
+  //
+  final RxInt departmentId = 0.obs;
+  var departments = <DepartmentModel>[].obs;
+
+
+
+
+  Future<void> fetchDepartments() async {
+    try {
+      var fetchedDepartments = await ApiHelper().fetchDepartments();
+      departments.assignAll(fetchedDepartments);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load departments');
+    }
+  }
+
+  void setDepartmentId(int department) {
+    departmentId.value = department;
+  }
+
 
   void toggleSlectedStudent(String student) {
     if (selectedStudent.contains(student)) {
@@ -79,9 +100,9 @@ class RemoveStudentControllerFromLastSem extends GetxController {
         final List<dynamic> bodyDecode = jsonDecode(response.body);
 
         // Assuming you want to process each department
-        for (var department in bodyDecode) {
-          departmentIdList.add(department['id']);
-        }
+        // for (var department in bodyDecode) {
+        //   departmentIdList.add(department['id']);
+        // }
       } else {
         print('Error: ${response.statusCode}');
       }
@@ -92,8 +113,9 @@ class RemoveStudentControllerFromLastSem extends GetxController {
   }
 
   FutureOr<void> fetchAllStudent() async {
+    print("hi i am fetch all student");
     final data = await ApiHelper.get(
-      "${StudentCardApi.studentListEndPoint}/$selectedDepartmentId/6",
+      "${StudentCardApi.studentListEndPoint}/$departmentId/6",
       headers: await ApiHelper().getHeaders(),
     );
 
@@ -113,9 +135,9 @@ class RemoveStudentControllerFromLastSem extends GetxController {
   }
 
   FutureOr<void> removeStudentFromLastSem() async {
-    if (selectedDepartmentId.value != null) {
+    if (departmentId.value != null) {
       final url = Uri.parse(
-          "${ApiHelper.baseUrl}${StudentCardApi.removeLastSemStudentEndPoint}?deptId=$selectedDepartmentId");
+          "${ApiHelper.baseUrl}${StudentCardApi.removeLastSemStudentEndPoint}?deptId=$departmentId");
 
       final response = await http.delete(
         url,
@@ -152,12 +174,13 @@ class RemoveStudentControllerFromLastSem extends GetxController {
     selectedStudent.clear();
     studentRollNumber.clear();
     selectedStudentRollNumber.clear();
-    selectedDepartmentId.value = null;
+    // departmentId.value = null;
   }
 
   @override
   void onInit() {
     getDepartmentId();
+    fetchDepartments();
     super.onInit();
   }
 }

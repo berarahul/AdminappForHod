@@ -1,17 +1,24 @@
+import 'package:attendanceadmin/model/departmentModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/update/UpdateStudentController.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/SubjectsCardService/update/updateSubjectController.dart';
 // Import your actual path
 
+
+
 class UpdateSubjectModal extends StatelessWidget {
-  final Updatesubjectcontroller controller = Get.put(Updatesubjectcontroller()); // Ensure controller is initialized
+  final Updatesubjectcontroller controller = Get.put(Updatesubjectcontroller());
+
+
+  UpdateSubjectModal({super.key}); // Ensure controller is initialized
+
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      padding:
+      EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -26,79 +33,121 @@ class UpdateSubjectModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            DropdownButton<String>(
-              hint: const Text('Select Semester'),
-              value: controller.selectedSemester.value.isEmpty ? null : controller.selectedSemester.value,
-              onChanged: (newValue) {
-                controller.fetchSubjects(newValue!);
-              },
-              items: controller.semesters.map((semester) {
-                return DropdownMenuItem(
-                  value: semester,
-                  child: Text(semester),
+
+
+
+
+            Obx(() {
+              if (controller.departments.isEmpty) {
+                return const CircularProgressIndicator();
+              } else {
+                return DropdownButtonFormField<int>(
+                  items: controller.departments.map((DepartmentModel department) {
+                    return DropdownMenuItem<int>(
+                      value: department.id,
+                      child: Text(department.departmentName),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      controller.setDepartmentId(value);
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Department',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: controller.departmentId.value == 0
+                      ? null
+                      : controller.departmentId.value,
                 );
-              }).toList(),
-            ),
+              }
+            }),
+
+
             const SizedBox(height: 20),
-            TextField(
-              onChanged: (value) {
-                controller.searchStudents(value);
-              },
-              decoration: InputDecoration(
-                labelText: 'Search Student',
-                border: OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 20),
-            Expanded(
-              child: Obx(() {
-                if (controller.filteredSubjects.isEmpty) {
-                  return const Center(child: Text('No students found'));
-                } else {
-                  return ListView.builder(
-                    itemCount: controller.filteredSubjects.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(controller.filteredSubjects[index]),
-                        onTap: () {
-                          _showEditSubjecttModal(context, controller.filteredSubjects[index], index);
-                        },
-                      );
+        Obx(() {
+          // Ensure subjectslistmodel.value and subjectslistmodel.value.subjects are not null
+          var subjectsListModel =
+              controller.subjectslistmodel.value;
+          var subjects = subjectsListModel?.subjects ?? [];
+
+          return Expanded(
+            child: subjects.isEmpty
+                ? const Center(
+                child: CircularProgressIndicator())
+                : ListView.builder(
+              itemCount: subjects.length,
+              itemBuilder: (context, index) {
+                var subject = subjects[index];
+
+                return  ListTile(
+                  title: Text(subject.subName ??
+                      'Unknown'),
+                // Provide a default value for subName if null
+                  trailing:IconButton(
+                    icon: const Icon(Icons.edit),
+                    onPressed: () {
+                      _showEditStudentModal(context, index);
                     },
-                  );
-                }
-              }),
+                  ),
+                );
+              },
             ),
+          );
+        }),
+
+
           ],
         ),
       ),
     );
   }
 
-  void _showEditSubjecttModal(BuildContext context, String studentName, int index) {
+  void _showEditStudentModal(BuildContext context, int index) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       builder: (context) => Padding(
-        padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: EditSubjectModal(subjectName: studentName, index: index),
+        padding:
+        EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: EditSubjectModal(index: index),
       ),
     );
   }
 }
 
-class EditSubjectModal extends StatelessWidget {
-  final String subjectName;
+class EditSubjectModal extends StatefulWidget {
   final int index;
 
-  EditSubjectModal({required this.subjectName, required this.index});
+  const EditSubjectModal({super.key, required this.index});
 
-  final Updatesubjectcontroller controller = Get.find<Updatesubjectcontroller>();
+  @override
+  State<EditSubjectModal> createState() => _EditSubjectModalState();
+}
+
+final Updatesubjectcontroller controller = Get.find<Updatesubjectcontroller>();
+
+class _EditSubjectModalState extends State<EditSubjectModal> {
+  @override
+  void initState() {
+    // controller.departmentController.text =
+    //     controller.selectedDepartment.value.toString();
+    // controller.semesterController.text =
+    //     controller.selectedSemester.value.toString();
+    // controller.nameController.text = controller.studentsList[widget.index];
+    // controller.rollController.text =
+    //     controller.studentRollNumber[widget.index].toString();
+
+    controller.subjectIdController.text=controller.subjectIds[widget.index].toString();
+    controller.subjectNameController.text=controller.subjectNames[widget.index];
+    controller.departmentIdController.text=controller.departmentId.value.toString();
+   controller.semesterIdController.text=controller.semesterIds[widget.index].toString();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController nameController = TextEditingController(text: subjectName);
-
     return Container(
       padding: const EdgeInsets.all(16.0),
       child: Column(
@@ -114,17 +163,44 @@ class EditSubjectModal extends StatelessWidget {
           ),
           const SizedBox(height: 20),
           TextField(
-            controller: nameController,
-            decoration: InputDecoration(
-              labelText: 'Subject Name',
+            controller: controller.subjectIdController,
+            decoration: const InputDecoration(
+              labelText: 'Subject ID',
               border: OutlineInputBorder(),
             ),
           ),
           const SizedBox(height: 20),
+          TextField(
+            controller: controller.subjectNameController,
+            decoration: const InputDecoration(
+              labelText: 'Name',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          TextField(
+            controller: controller.departmentIdController,
+            decoration: const InputDecoration(
+              labelText: 'Department Id',
+              border: OutlineInputBorder(),
+            ),
+          ),
+          const SizedBox(height: 20),
+          // Textform field for roll number
+          TextField(
+            controller: controller.semesterIdController,
+            decoration: const InputDecoration(
+              labelText: 'Semester Id',
+              border: OutlineInputBorder(),
+            ),
+          ),
+
+
+          const SizedBox(height: 20),
+
           ElevatedButton(
-            onPressed: () {
-              controller.updateStudentName(index, nameController.text);
-              Navigator.of(context).pop();
+            onPressed: () async {
+              await controller.updatedSubject();
             },
             child: const Text('Save'),
           ),

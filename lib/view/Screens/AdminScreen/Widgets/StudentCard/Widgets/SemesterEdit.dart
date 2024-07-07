@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../../../model/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/semesterEdit/SemesterEditController.dart';
+import '../../SubjectCard/Widgets/UpdateSubjectWidget.dart';
 
 class AddSemesterScreen extends StatelessWidget {
   final SemesterController semesterController = Get.put(SemesterController());
@@ -15,27 +17,58 @@ class AddSemesterScreen extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            Obx(
-                  () => DropdownButton<int>(
-                alignment: Alignment.center,
-                hint: semesterController.departmentIdList.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
-                    : const Text('Select Department'),
-                borderRadius: BorderRadius.circular(8),
-                isExpanded: true,
-                value: semesterController.selectedDepartmentId.value,
-                onChanged: (newValue) async {
-                  // Update the selectedDepartmentId with the new value
-                  semesterController.selectedDepartmentId.value = newValue!;
-                },
-                items: semesterController.departmentIdList.map((departmentId) {
-                  return DropdownMenuItem<int>(
-                    value: departmentId,
-                    child: Text(departmentId.toString()),
-                  );
-                }).toList(),
-              ),
-            ),
+            // Obx(
+            //       () => DropdownButton<int>(
+            //     alignment: Alignment.center,
+            //     hint: semesterController.departmentIdList.isEmpty
+            //         ? const Center(child: CircularProgressIndicator())
+            //         : const Text('Select Department'),
+            //     borderRadius: BorderRadius.circular(8),
+            //     isExpanded: true,
+            //     value: semesterController.selectedDepartmentId.value,
+            //     onChanged: (newValue) async {
+            //       // Update the selectedDepartmentId with the new value
+            //       semesterController.selectedDepartmentId.value = newValue!;
+            //     },
+            //     items: semesterController.departmentIdList.map((departmentId) {
+            //       return DropdownMenuItem<int>(
+            //         value: departmentId,
+            //         child: Text(departmentId.toString()),
+            //       );
+            //     }).toList(),
+            //   ),
+            // ),
+
+
+
+            Obx(() {
+              if (semesterController.departments.isEmpty) {
+                return const CircularProgressIndicator();
+              } else {
+                return DropdownButtonFormField<int>(
+                  items: semesterController.departments.map((DepartmentModel department) {
+                    return DropdownMenuItem<int>(
+                      value: department.id,
+                      child: Text(department.departmentName),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      semesterController.setDepartmentId(value);
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Department',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: semesterController.departmentId.value == 0
+                      ? null
+                      : semesterController.departmentId.value,
+                );
+              }
+            }),
+
+
             const SizedBox(height: 20),
             Obx(
                   () => DropdownButton<int>(

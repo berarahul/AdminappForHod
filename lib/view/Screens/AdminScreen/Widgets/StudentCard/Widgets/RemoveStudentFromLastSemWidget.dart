@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../../model/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/last_sem_student_remove/removelastsemController.dart';
 
 class Removestudentfromlastsemwidget extends StatelessWidget {
@@ -29,27 +30,61 @@ class Removestudentfromlastsemwidget extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              Obx(() => DropdownButton<int>(
-                  alignment: Alignment.center,
-                  hint: controller.departmentIdList.isEmpty
-                      ? const Center(child: CircularProgressIndicator())
-                      : const Text('Select Department'),
-                  borderRadius: BorderRadius.circular(8),
-                  isExpanded: true,
-                  value: controller.selectedDepartmentId.value,
-                  onChanged: (newValue) async {
-                    // Update the selectedDepartmentId with the new value
-                    controller.selectedDepartmentId.value = newValue!;
-          
-                    await controller.fetchAllStudent();
-                  },
-                  items: controller.departmentIdList.map((departmentId) {
-                    return DropdownMenuItem<int>(
-                      value: departmentId,
-                      child: Text(departmentId.toString()),
-                    );
-                  }).toList())
-              ),
+              // Obx(() => DropdownButton<int>(
+              //     alignment: Alignment.center,
+              //     hint: controller.departmentIdList.isEmpty
+              //         ? const Center(child: CircularProgressIndicator())
+              //         : const Text('Select Department'),
+              //     borderRadius: BorderRadius.circular(8),
+              //     isExpanded: true,
+              //     value: controller.selectedDepartmentId.value,
+              //     onChanged: (newValue) async {
+              //       // Update the selectedDepartmentId with the new value
+              //       controller.selectedDepartmentId.value = newValue!;
+              //
+              //       await controller.fetchAllStudent();
+              //     },
+              //     items: controller.departmentIdList.map((departmentId) {
+              //       return DropdownMenuItem<int>(
+              //         value: departmentId,
+              //         child: Text(departmentId.toString()),
+              //       );
+              //     }).toList())
+              //
+              // ),
+
+              Obx(() {
+                if (controller.departments.isEmpty) {
+                  return const CircularProgressIndicator();
+                } else {
+                  return DropdownButtonFormField<int>(
+                    items: controller.departments.map((DepartmentModel department) {
+                      return DropdownMenuItem<int>(
+                        value: department.id,
+                        child: Text(department.departmentName),
+                      );
+                    }).toList(),
+                    onChanged: (value) {
+                      if (value != null) {
+                        controller.setDepartmentId(value);
+                        controller.fetchAllStudent();
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Department',
+                      border: OutlineInputBorder(),
+                    ),
+                    value: controller.departmentId.value == 0
+                        ? null
+                        : controller.departmentId.value,
+                  );
+                }
+              }),
+
+
+
+
+
               Obx(() => controller.students.isEmpty
                   ? const SizedBox()
                   : Row(

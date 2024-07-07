@@ -19,7 +19,7 @@ class AppRoutes {
     GetPage(name: login, page: () => LoginScreen()),
     GetPage(name: admin, page: () => AdminScreen()),
     GetPage(name: student, page: () => StudentActionsScreen()), // Ensure these screens are implemented
-    GetPage(name: teacher, page: () => TeacherActionScreen()),
+    GetPage(name: teacher, page: () => TeacherActionsScreen()),
     GetPage(name: subject, page: () => SubjectActionScreen()),
   ];
 }

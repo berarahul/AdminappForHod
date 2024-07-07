@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../../model/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/update/UpdateStudentController.dart';
 // Import your actual path
 
@@ -13,7 +14,10 @@ class UpdateStudentModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+      EdgeInsets.only(bottom: MediaQuery
+          .of(context)
+          .viewInsets
+          .bottom),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -28,64 +32,129 @@ class UpdateStudentModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Obx(() => DropdownButton<int>(
-                  hint: controller.departmentIdList.isEmpty
-                      ? const Text('Loading...')
-                      : const Text('Select Department'),
-                  value: controller.selectedDepartment.value,
-                  onChanged: (newValue) {
-                    controller.selectedDepartment.value = newValue;
-                  },
-                  items: controller.departmentIdList.map((department) {
-                    return DropdownMenuItem(
-                      value: department,
-                      child: Text(department.toString()),
-                    );
-                  }).toList(),
-                )),
-            const SizedBox(height: 20),
-            Obx(() => DropdownButton<int>(
-                  hint: const Text('Select Semester'),
-                  value: controller.selectedSemester.value,
-                  onChanged: (newValue) async {
-                    controller.selectedSemester.value = newValue;
+            // Obx(() => DropdownButton<int>(
+            //       hint: controller.departmentIdList.isEmpty
+            //           ? const Text('Loading...')
+            //           : const Text('Select Department'),
+            //       value: controller.selectedDepartment.value,
+            //       onChanged: (newValue) {
+            //         controller.selectedDepartment.value = newValue;
+            //       },
+            //       items: controller.departmentIdList.map((department) {
+            //         return DropdownMenuItem(
+            //           value: department,
+            //           child: Text(department.toString()),
+            //         );
+            //       }).toList(),
+            //     )),
 
-                    await controller.fetchAllStudent();
-                  },
-                  items: controller.semestersList.map((semester) {
-                    return DropdownMenuItem(
-                      value: semester,
-                      child: Text(semester.toString()),
+
+            Obx(() {
+              if (controller.departments.isEmpty) {
+                return const CircularProgressIndicator();
+              } else {
+                return DropdownButtonFormField<int>(
+                  items: controller.departments.map((
+                      DepartmentModel department) {
+                    return DropdownMenuItem<int>(
+                      value: department.id,
+                      child: Text(department.departmentName),
                     );
                   }).toList(),
-                )),
+                  onChanged: (value) {
+                    if (value != null) {
+                      controller.setDepartmentId(value);
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Department',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: controller.departmentId.value == 0
+                      ? null
+                      : controller.departmentId.value,
+                );
+              }
+            }),
+
             const SizedBox(height: 20),
-            Obx(() => controller.selectedDepartment.value != null &&
-                    controller.selectedSemester.value != null
-                ? Expanded(
-                    child: Obx(() {
-                      if (controller.studentsList.isEmpty) {
-                        return const Center(child: Text('No students found'));
-                      } else {
-                        return ListView.builder(
-                          itemCount: controller.studentsList.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text(controller.studentsList[index]),
-                              subtitle: Text(
-                                  'Roll Number: ${controller.studentRollNumber[index]}'),
-                              trailing: IconButton(
-                                icon: const Icon(Icons.edit),
-                                onPressed: () {
-                                  _showEditStudentModal(context, index);
-                                },
-                              ),
-                            );
-                          },
+
+
+            // Obx(() => DropdownButton<int>(
+            //       hint: const Text('Select Semester'),
+            //       value: controller.selectedSemester.value,
+            //       onChanged: (newValue) async {
+            //         controller.selectedSemester.value = newValue;
+            //
+            //         await controller.fetchAllStudent();
+            //       },
+            //       items: controller.semestersList.map((semester) {
+            //         return DropdownMenuItem(
+            //           value: semester,
+            //           child: Text(semester.toString()),
+            //         );
+            //       }).toList(),
+            //     )),
+            //
+
+
+            Obx(() {
+              return DropdownButton<int>(
+                alignment: Alignment.center,
+                hint: const Text('Select Semester'),
+                borderRadius: BorderRadius.circular(8),
+                isExpanded: true,
+                value: controller.selectedSemester.value != 0
+                    ? controller.selectedSemester.value
+                    : null,
+                onChanged: (newValue) {
+                  controller.selectedSemester.value = newValue!;
+                  print(newValue);
+                  controller.fetchStudents(newValue);
+                },
+                items: controller.semestersList.map((semester) {
+                  return DropdownMenuItem(
+                    value: semester,
+                    child: Text(semester.toString()),
+                  );
+                }).toList(),
+              );
+            }),
+
+
+            const SizedBox(height: 20),
+  //
+            Obx(() => controller.departmentId.value != null &&
+                controller.selectedSemester.value != null ?
+            Expanded(
+              child: Obx(() {
+                print("i am inside the obx");
+                if (controller.studentsList.isEmpty) {
+                  return const Center(child: Text('No students found'));
+                } else {
+                   print("hi i am here");
+                    return ListView.builder(
+                      itemCount: controller.studentsList.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(controller.studentsList[index]),
+                          subtitle: Text(
+                              'Roll Number: ${controller
+                                  .studentRollNumber[index]}'
+                          ),
+                          trailing: IconButton(
+                            icon: const Icon(Icons.edit),
+                            onPressed: () {
+                              _showEditStudentModal(context, index);
+                            },
+                          ),
                         );
-                      }
-                    }),
-                  )
+                      },
+                    );
+
+                }
+              }),
+            )
                 : const SizedBox.shrink())
           ],
         ),
@@ -93,15 +162,22 @@ class UpdateStudentModal extends StatelessWidget {
     );
   }
 
+
+
+
   void _showEditStudentModal(BuildContext context, int index) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => Padding(
-        padding:
-            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
-        child: EditStudentModal(index: index),
-      ),
+      builder: (context) =>
+          Padding(
+            padding:
+            EdgeInsets.only(bottom: MediaQuery
+                .of(context)
+                .viewInsets
+                .bottom),
+            child: EditStudentModal(index: index),
+          ),
     );
   }
 }
@@ -121,7 +197,7 @@ class _EditStudentModalState extends State<EditStudentModal> {
   @override
   void initState() {
     controller.departmentController.text =
-        controller.selectedDepartment.value.toString();
+        controller.departmentId.value.toString();
     controller.semesterController.text =
         controller.selectedSemester.value.toString();
     controller.nameController.text = controller.studentsList[widget.index];

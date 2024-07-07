@@ -119,9 +119,9 @@ class AddStudentController extends GetxController {
   var studentName = ''.obs;
   final RxString studentId = ''.obs;
   final RxInt rollNum = 0.obs;
-  final RxInt departmentId = 0.obs;
-  final RxInt semesterId = 0.obs;
 
+  final RxInt semesterId = 0.obs;
+  final RxInt departmentId = 0.obs;
   var departments = <DepartmentModel>[].obs;
 
   @override

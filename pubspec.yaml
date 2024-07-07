@@ -19,6 +19,7 @@ dependencies:
   snippet_coder_utils: ^1.0.15
   intl: ^0.19.0
   dropdown_search: ^5.0.6
+  flutter_native_splash: ^2.4.1
 
 dev_dependencies:
   flutter_test:
@@ -35,6 +36,6 @@ flutter:
     - assets/LOGOS/
     - assets/icons/dark/
     - assets/icons/light/
-    - assets/images/developerImage/
+    - assets/images/
     - assets/images/defaultimage/
     - assets/images/forsplash/

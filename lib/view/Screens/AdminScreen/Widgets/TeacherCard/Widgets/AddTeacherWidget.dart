@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:dropdown_search/dropdown_search.dart';
 import '../../../../../../constant/AppColors.dart';
+import '../../../../../../model/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/add/TeacherAddController.dart';
 
 class AddTeacherModal extends StatelessWidget {
@@ -76,26 +77,60 @@ class AddTeacherModal extends StatelessWidget {
             const SizedBox(height: 20),
             const SizedBox(height: 20),
             const SizedBox(height: 20),
-            Obx(() => DropdownButton<int>(
-                alignment: Alignment.center,
-                hint: controller.departmentIdList.isEmpty
-                    ? const Center(child: CircularProgressIndicator())
-                    : const Text('Select Department'),
-                borderRadius: BorderRadius.circular(8),
-                isExpanded: true,
-                value: controller.selectedDepartmentId.value,
-                onChanged: (newValue) async {
-                  // Update the selectedDepartmentId with the new value
-                  controller.selectedDepartmentId.value = newValue!;
+            // Obx(() => DropdownButton<int>(
+            //     alignment: Alignment.center,
+            //     hint: controller.departmentIdList.isEmpty
+            //         ? const Center(child: CircularProgressIndicator())
+            //         : const Text('Select Department'),
+            //     borderRadius: BorderRadius.circular(8),
+            //     isExpanded: true,
+            //     value: controller.selectedDepartmentId.value,
+            //     onChanged: (newValue) async {
+            //       // Update the selectedDepartmentId with the new value
+            //       controller.selectedDepartmentId.value = newValue!;
+            //
+            //       await controller.fetchallSubjects();
+            //     },
+            //     items: controller.departmentIdList.map((departmentId) {
+            //       return DropdownMenuItem<int>(
+            //         value: departmentId,
+            //         child: Text(departmentId.toString()),
+            //       );
+            //     }).toList())),
 
-                  await controller.fetchallSubjects();
-                },
-                items: controller.departmentIdList.map((departmentId) {
-                  return DropdownMenuItem<int>(
-                    value: departmentId,
-                    child: Text(departmentId.toString()),
-                  );
-                }).toList())),
+
+            Obx(() {
+              if (controller.departments.isEmpty) {
+                return const CircularProgressIndicator();
+              } else {
+                return DropdownButtonFormField<int>(
+                  items: controller.departments.map((DepartmentModel department) {
+                    return DropdownMenuItem<int>(
+                      value: department.id,
+                      child: Text(department.departmentName),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      controller.setDepartmentId(value);
+                      controller.subjectsList.clear();
+                      controller.fetchallSubjects();
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Department',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: controller.departmentId.value == 0
+                      ? null
+                      : controller.departmentId.value,
+                );
+              }
+            }),
+
+
+
+
             const SizedBox(height: 20),
             const Text('Add Subjects'),
             Obx(

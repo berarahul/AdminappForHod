@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import '../../../../../../constant/AppUrl/StudentCard/StudentCardApi.dart';
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
 import '../../../../../../model/LoginModel.dart';
+import '../../../../../../model/departmentModel.dart';
 import '../../../../LoginService/AuthServices.dart';
 import '../../../../LoginService/AutharizationHeader.dart';
 
@@ -19,10 +20,36 @@ class AddTeacherController extends GetxController {
   RxList<String> subjectsList = <String>[].obs;
   RxList<int> selectedSubjectIds = <int>[].obs;
 
+
+
+
+  final RxInt departmentId = 0.obs;
+  var departments = <DepartmentModel>[].obs;
+
+
+
+
+  Future<void> fetchDepartments() async {
+    try {
+      var fetchedDepartments = await ApiHelper().fetchDepartments();
+      departments.assignAll(fetchedDepartments);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load departments');
+    }
+  }
+
+  void setDepartmentId(int department) {
+    departmentId.value = department;
+  }
+
+
+
+
   @override
   void onInit() {
     super.onInit();
-    getDepartmentId(); // Fetch department IDs when the controller is initialized
+    getDepartmentId();
+    fetchDepartments();// Fetch department IDs when the controller is initialized
   }
 
   // Setters for observable properties
@@ -56,22 +83,22 @@ class AddTeacherController extends GetxController {
 
       if (response.statusCode == 200) {
         final List<dynamic> bodyDecode = jsonDecode(response.body);
-        for (var department in bodyDecode) {
-          departmentIdList.add(department['id']);
-        }
+        // for (var department in bodyDecode) {
+        //   departmentIdList.add(department['id']);
+        // }
       }
     }
   }
 
   Future<void> fetchallSubjects() async {
     try {
-      if (selectedDepartmentId.value == null) {
+      if (departmentId.value == null) {
         print('Error: Selected department ID is null');
         return;
       }
 
       String endpoint =
-          "${StudentCardApi.departmentListEndPoint}/${Subjectcardapi.subjectEndPoint}/${selectedDepartmentId.value}";
+          "${StudentCardApi.departmentListEndPoint}/${Subjectcardapi.subjectEndPoint}/${departmentId.value}";
 
       var response = await ApiHelper.get(endpoint,
           headers: await ApiHelper().getHeaders());
@@ -87,7 +114,7 @@ class AddTeacherController extends GetxController {
 
           for (var subject in subjectsListResponse) {
             String subjectId =
-                subject['subjectId'].toString(); // Assuming subjectId is an int
+                subject['subName'].toString(); // Assuming subjectId is an int
             subjectsList.add(subjectId);
           }
         } else {
@@ -107,14 +134,14 @@ class AddTeacherController extends GetxController {
         userName.value.isNotEmpty &&
         password.value != 0 &&
         confirmPassword.value != 0 &&
-        selectedDepartmentId.value != 0) {
+        departmentId.value != 0) {
       // Json body for the API request
       final Map<String, dynamic> body = {
         'name': teacherName.value,
         'userName': userName.value,
         'password': password.value,
         'confirmPassword': confirmPassword.value,
-        'deptId': int.parse(selectedDepartmentId.value.toString()),
+        'deptId': int.parse(departmentId.value.toString()),
         'subjects': selectedSubjectIds.toList(),
       };
 
@@ -154,6 +181,6 @@ class AddTeacherController extends GetxController {
     password.value = '';
     confirmPassword.value = '';
 
-    selectedDepartmentId.value = null;
+    departmentId.value = 0;
   }
 }
