@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-import '../../../../../../model/departmentModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/update/UpdateStudentController.dart';
 // Import your actual path
 

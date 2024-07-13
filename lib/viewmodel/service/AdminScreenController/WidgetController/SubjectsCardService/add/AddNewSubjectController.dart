@@ -4,7 +4,9 @@ import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
 import '../../../../../../constant/AppUrl/StudentCard/StudentCardApi.dart';
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
-import '../../../../../../model/LoginModel.dart';
+import '../../../../../../model/login/LoginModel.dart';
+import '../../../../../../model/subjectCard/papperCodeNameModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../LoginService/AuthServices.dart';
 import '../../../../LoginService/AutharizationHeader.dart';
 
@@ -15,12 +17,55 @@ class AddSubjectController extends GetxController {
   var departmentIdList = <int>[].obs;
   Rx<int?> selectedDepartmentId = Rx<int?>(null);
   Rx<int?> subId = Rx<int?>(null);
+  final RxInt departmentId = 0.obs;
+  var departments = <DepartmentModel>[].obs;
 
-
+    var PaperCodeName =<PaperCodeNameModel>[].obs;
+final RxInt PaperCodeNameId=0.obs;
   @override
   void onInit() {
     super.onInit();
-    getDepartmentId(); // Fetch department IDs when the controller is initialized
+    getDepartmentId();
+    fetchDepartments();
+    fetchPaperCodeName();
+    // Fetch department IDs when the controller is initialized
+  }
+
+
+
+
+
+  Future<void> fetchDepartments() async {
+    try {
+      var fetchedDepartments = await ApiHelper().fetchDepartments();
+      departments.assignAll(fetchedDepartments);
+    } catch (e) {
+      Get.snackbar('Error', 'Failed to load departments');
+    }
+  }
+
+
+    Future<void> fetchPaperCodeName() async {
+
+    try{
+      var fetchPaperCodeName=await ApiHelper().fetchPaperCodeNameByAPi();
+      PaperCodeName.assignAll(fetchPaperCodeName);
+
+    }
+    catch (e){
+
+            Get.snackbar("Error", "Fetching Paper Code Name");
+    }
+    }
+
+
+
+
+
+
+
+  void setDepartmentId(int department) {
+    departmentId.value = department;
   }
 
   // Setters for observable properties
@@ -32,8 +77,9 @@ class AddSubjectController extends GetxController {
     semesterId.value = value;
   }
 
-  void setSubId(int? value) {
-    subId.value = value;
+
+  void setPaperCodeNameId(int paperCodeNameId) {
+    PaperCodeNameId.value = paperCodeNameId;
   }
 
 
@@ -51,9 +97,9 @@ class AddSubjectController extends GetxController {
 
       if (response.statusCode == 200) {
         final List<dynamic> bodyDecode = jsonDecode(response.body);
-        for (var department in bodyDecode) {
-          departmentIdList.add(department['id']);
-        }
+        // for (var department in bodyDecode) {
+        //   departmentIdList.add(department['id']);
+        // }
       }
     }
   }
@@ -63,7 +109,7 @@ class AddSubjectController extends GetxController {
         semesterId.value!=0 &&
         subId.value != 0 &&
 
-        selectedDepartmentId.value != 0) {
+        departmentId.value != 0) {
       // get token from AuthService
       final String? token = authService.getToken();
 
@@ -81,9 +127,9 @@ class AddSubjectController extends GetxController {
 
 
           "name": subjectName.value,
-          "deptId": selectedDepartmentId.value,
+          "deptId": departmentId.value,
           "semesterId": semesterId.value,
-          "subId": subId.value,
+          "subId": PaperCodeNameId.value,
 
         };
 
@@ -96,7 +142,7 @@ class AddSubjectController extends GetxController {
 
         Get.snackbar(
           'Success',
-          'Student added successfully',
+          'Subject added successfully',
           snackPosition: SnackPosition.BOTTOM,
         );
 
@@ -116,7 +162,7 @@ class AddSubjectController extends GetxController {
     subjectName.value = '';
     subId.value = null;
     semesterId.value = null;
-    selectedDepartmentId.value = null;
+    departmentId.value = 0;
 
   }
 

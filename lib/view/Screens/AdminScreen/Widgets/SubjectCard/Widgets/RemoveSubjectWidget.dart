@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../../constant/AppColors.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/remove/RemoveStudentController.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/SubjectsCardService/remove/removesubjectController.dart';
 import '../../StudentCard/Widgets/UpdateStudentWidget.dart';
@@ -33,55 +34,40 @@ class RemoveSubjectModal extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Dropdown for selecting department id
                 Obx(() {
-                  return DropdownButton<int>(
-                      alignment: Alignment.center,
-                      hint: controller.departmentIdList.isEmpty
-                          ? const Center(child: CircularProgressIndicator())
-                          : const Text('Select Department'),
-                      borderRadius: BorderRadius.circular(8),
-                      isExpanded: true,
-                      value: controller.selectedDepartmentId.value,
-                      onChanged: (newValue) {
-                        // Update the selectedDepartmentId with the new value
-                        controller.selectedDepartmentId.value = newValue!;
-                      },
-                      items: controller.departmentIdList.map((departmentId) {
+                  if (controller.departments.isEmpty) {
+                    return const CircularProgressIndicator();
+                  } else {
+                    return DropdownButtonFormField<int>(
+                      items: controller.departments
+                          .map((DepartmentModel department) {
                         return DropdownMenuItem<int>(
-                          value: departmentId,
-                          child: Text(departmentId.toString()),
+                          value: department.id,
+                          child: Text(department.departmentName),
                         );
-                      }).toList());
+                      }).toList(),
+                      onChanged: (value) {
+                        if (value != null) {
+                          controller.setDepartmentId(value);
+                          print("fetching subject");
+                          controller.fetchAllSubject();
+                        }
+                      },
+                      decoration: const InputDecoration(
+                        labelText: 'Department',
+                        border: OutlineInputBorder(),
+                      ),
+                      value: controller.departmentId.value == 0
+                          ? null
+                          : controller.departmentId.value,
+                    );
+                  }
                 }),
 
-                const SizedBox(height: 20),
 
-                // Dropdown for selecting semester
-                Obx(() {
-                  return DropdownButton<int>(
-                    alignment: Alignment.center,
-                    hint: const Text('Select Semester'),
-                    borderRadius: BorderRadius.circular(8),
-                    isExpanded: true,
-                    value: controller.selectedSemester.value != 0
-                        ? controller.selectedSemester.value
-                        : null,
-                    onChanged: (newValue) {
-                      controller.selectedSemester.value = newValue!;
-                      controller.fetchStudents(newValue);
-                    },
-                    items: controller.semesters.map((semester) {
-                      return DropdownMenuItem(
-                        value: semester,
-                        child: Text(semester.toString()),
-                      );
-                    }).toList(),
-                  );
-                }),
                 const SizedBox(height: 20),
                 Obx(() {
-                  if (controller.selectedSemester.value == null) {
+                  if (controller.departmentId.value == null) {
                     return Container();
                   } else {
                     return Expanded(
@@ -100,44 +86,79 @@ class RemoveSubjectModal extends StatelessWidget {
                           //   ],
                           // ),
                           // const SizedBox(height: 20),
+                          //
+                          // Obx(() {
+                          //   // Ensure subjectslistmodel.value and subjectslistmodel.value.subjects are not null
+                          //   var subjectsListModel =
+                          //       controller.subjectslistmodel.value;
+                          //   var subjects = subjectsListModel?.subjects ?? [];
+                          //
+                          //   return Expanded(
+                          //     child: subjects.isEmpty
+                          //         ? const Center(
+                          //             child: CircularProgressIndicator())
+                          //         : ListView.builder(
+                          //             itemCount: subjects.length,
+                          //             itemBuilder: (context, index) {
+                          //               var subject = subjects[index];
+                          //
+                          //               return Obx(() => ListTile(
+                          //                     title: Text(subject.subName ??
+                          //                         'Unknown'), // Provide a default value for subName if null
+                          //                     trailing: Checkbox(
+                          //                       value: controller
+                          //                               .selectedSubject
+                          //                               .value ==
+                          //                           subject.paperId,
+                          //                       onChanged: (value) {
+                          //                         controller.addOrRemoveStudent(
+                          //                             index: index);
+                          //                       },
+                          //                     ),
+                          //                   ));
+                          //             },
+                          //           ),
+                          //   );
+                          // }),
+
+
 
                           Obx(() {
-                            // Ensure subjectslistmodel.value and subjectslistmodel.value.subjects are not null
-                            var subjectsListModel =
-                                controller.subjectslistmodel.value;
-                            var subjects = subjectsListModel?.subjects ?? [];
-
                             return Expanded(
-                              child: subjects.isEmpty
-                                  ? const Center(
-                                      child: CircularProgressIndicator())
-                                  : ListView.builder(
-                                      itemCount: subjects.length,
-                                      itemBuilder: (context, index) {
-                                        var subject = subjects[index];
+                                child: controller.subjects.isEmpty
+                                    ? const Center(
+                                    child: CircularProgressIndicator())
+                                    : ListView.builder(
+                                  itemCount: controller.subjects.length,
+                                  itemBuilder: (context, index) {
+                                    return Obx(() {
+                                      return CheckboxListTile(
+                                        value: controller.selectedSubject
+                                            .contains(
+                                          controller
+                                              .subjectId[index],
+                                        ),
+                                        onChanged: (value) {
+                                          controller.toggleIsUserSelected(
+                                            index: index,
+                                          );
+                                        },
+                                        title: Text(
+                                            controller.subjects[index]),
+                                      );
+                                    });
+                                  },
+                                ));
+                          }
 
-                                        return Obx(() => ListTile(
-                                              title: Text(subject.subName ??
-                                                  'Unknown'), // Provide a default value for subName if null
-                                              trailing: Checkbox(
-                                                value: controller
-                                                        .selectedSubject
-                                                        .value ==
-                                                    subject.subjectId,
-                                                onChanged: (value) {
-                                                  controller.addOrRemoveStudent(
-                                                      index: index);
-                                                },
-                                              ),
-                                            ));
-                                      },
-                                    ),
-                            );
-                          }),
+                          ),
+
                           const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () async {
+
                               await controller.removeSelectedSubjects();
+                              await controller.updateList();
                             },
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.red,

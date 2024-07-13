@@ -8,8 +8,8 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
-import '../../../../../../model/LoginModel.dart';
-import '../../../../../../model/departmentModel.dart';
+import '../../../../../../model/login/LoginModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 
 class SemesterController extends GetxController {
   final AuthService authService = AuthService();

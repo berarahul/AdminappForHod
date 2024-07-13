@@ -1,6 +1,6 @@
 class Subjectslistmodel {
   String? departmentName;
-  List<Subject>? subjects;
+  List<SubjectModel>? subjects;
 
   Subjectslistmodel({
     this.departmentName,
@@ -11,7 +11,7 @@ class Subjectslistmodel {
     return Subjectslistmodel(
       departmentName: json['departmentName'],
       subjects:
-          List<Subject>.from(json['subjects'].map((x) => Subject.fromJson(x))),
+          List<SubjectModel>.from(json['subjects'].map((x) => SubjectModel.fromJson(x))),
     );
   }
 
@@ -21,32 +21,33 @@ class Subjectslistmodel {
       'subjects': subjects!.map((x) => x.toJson()).toList(),
     };
   }
-
-
 }
-
-class Subject {
+//
+class SubjectModel {
   int? id;
-  String? subName;
+ String? subName;
   int? deptId;
   int? semesterId;
-  int? subjectId;
-
-  Subject({
+  int? paperId;
+ String? paperName;
+  SubjectModel({
     this.id,
     this.subName,
     this.deptId,
     this.semesterId,
-    this.subjectId,
+    this.paperId,
+    this.paperName
+
   });
 
-  factory Subject.fromJson(Map<String, dynamic> json) {
-    return Subject(
+  factory SubjectModel.fromJson(Map<String, dynamic> json) {
+    return SubjectModel(
       id: json['id'],
       subName: json['subName'],
       deptId: json['deptId'],
       semesterId: json['semesterId'],
-      subjectId: json['subjectId'],
+      paperId: json['paperId'],
+      paperName: json['paperName'],
     );
   }
 
@@ -56,9 +57,13 @@ class Subject {
       'subName': subName,
       'deptId': deptId,
       'semesterId': semesterId,
-      'subjectId': subjectId,
+      'paperId': paperId,
+      'paperName': paperName
     };
   }
 }
+
+
+
 
 

@@ -108,7 +108,7 @@ import 'package:attendanceadmin/constant/AppUrl/StudentCard/StudentCardApi.dart'
 import 'package:attendanceadmin/viewmodel/service/LoginService/AuthServices.dart';
 import 'package:get/get.dart';
 import 'dart:convert';
-import '../../../../../../model/departmentModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../LoginService/AutharizationHeader.dart';
 
 

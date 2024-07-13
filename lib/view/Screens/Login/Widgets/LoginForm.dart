@@ -10,7 +10,7 @@ import '../../../../constant/RoundButton.dart';
 import '../../../../constant/routes/approutes.dart';
 import '../../../../constant/sizes.dart';
 import '../../../../constant/text_string.dart';
-import '../../../../model/LoginModel.dart';
+import '../../../../model/login/LoginModel.dart';
 import '../../../../viewmodel/service/LoginService/AuthServices.dart';
 import '../../../../viewmodel/service/LoginService/LoginController.dart';
 

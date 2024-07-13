@@ -6,8 +6,8 @@ import 'package:attendanceadmin/constant/AppUrl/StudentCard/StudentCardApi.dart'
 import 'package:get/get.dart';
 
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
-import '../../../../../../model/LoginModel.dart';
-import '../../../../../../model/departmentModel.dart';
+import '../../../../../../model/login/LoginModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../LoginService/AuthServices.dart';
 import '../../../../LoginService/AutharizationHeader.dart';
 

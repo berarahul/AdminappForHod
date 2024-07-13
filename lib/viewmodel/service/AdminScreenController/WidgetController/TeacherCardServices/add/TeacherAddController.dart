@@ -3,10 +3,12 @@ import 'package:attendanceadmin/constant/AppUrl/SubjectCard/SubjectCardApi.dart'
 import 'package:get/get.dart';
 import '../../../../../../constant/AppUrl/StudentCard/StudentCardApi.dart';
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
-import '../../../../../../model/LoginModel.dart';
-import '../../../../../../model/departmentModel.dart';
+import '../../../../../../model/login/LoginModel.dart';
+import '../../../../../../model/subjectCard/subjectsListModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../LoginService/AuthServices.dart';
 import '../../../../LoginService/AutharizationHeader.dart';
+import 'package:http/http.dart' as http;
 
 class AddTeacherController extends GetxController {
   final AuthService authService = AuthService();
@@ -20,7 +22,9 @@ class AddTeacherController extends GetxController {
   RxList<String> subjectsList = <String>[].obs;
   RxList<int> selectedSubjectIds = <int>[].obs;
 
+  var selectedSubjects = <SubjectModel>[].obs;
 
+  var subjects = <SubjectModel>[].obs;
 
 
   final RxInt departmentId = 0.obs;
@@ -41,6 +45,51 @@ class AddTeacherController extends GetxController {
   void setDepartmentId(int department) {
     departmentId.value = department;
   }
+
+
+
+  Future<void> fetchsubjects() async {
+    try {
+      var fetchsubjects = await fetchSubjects();
+      subjects.assignAll(fetchsubjects);
+    } catch (e) {
+      print("Error fetching subjects: $e");
+      Get.snackbar('Error', e.toString());
+    }
+  }
+
+
+
+  Future<List<SubjectModel>> fetchSubjects() async {
+    try {
+      final headers = await ApiHelper().getHeaders();
+      print('Department ID set to: $departmentId');
+
+      final url = "https://attendancesystem-s1.onrender.com/api/${StudentCardApi.departmentListEndPoint}/${Subjectcardapi.subjectEndPoint}/$departmentId";
+      print('Fetching subjects from URL: $url with headers: $headers');
+
+      final response = await http.get(Uri.parse(url), headers: headers);
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        print('Response data: $jsonData');
+
+        List<dynamic> subjectsList = jsonData['subjects'];
+        if (subjectsList == null) {
+          throw Exception('Subjects list is null');
+        }
+
+        return subjectsList.map((item) => SubjectModel.fromJson(item)).toList();
+      } else {
+        print('Failed to load subjects: ${response.body}');
+        throw Exception('Failed to load subjects: ${response.body}');
+      }
+    } catch (e) {
+      print('Error fetching subjects: $e');
+      throw Exception('Error fetching subjects: $e');
+    }
+  }
+
 
 
 
@@ -90,44 +139,7 @@ class AddTeacherController extends GetxController {
     }
   }
 
-  Future<void> fetchallSubjects() async {
-    try {
-      if (departmentId.value == null) {
-        print('Error: Selected department ID is null');
-        return;
-      }
 
-      String endpoint =
-          "${StudentCardApi.departmentListEndPoint}/${Subjectcardapi.subjectEndPoint}/${departmentId.value}";
-
-      var response = await ApiHelper.get(endpoint,
-          headers: await ApiHelper().getHeaders());
-
-      if (response.statusCode == 200) {
-        Map<String, dynamic> decodedData = jsonDecode(response.body);
-
-        if (decodedData.containsKey('subjects') &&
-            decodedData['subjects'] is List) {
-          List<dynamic> subjectsListResponse = decodedData['subjects'];
-
-          subjectsList.clear();
-
-          for (var subject in subjectsListResponse) {
-            String subjectId =
-                subject['subName'].toString(); // Assuming subjectId is an int
-            subjectsList.add(subjectId);
-          }
-        } else {
-          print(
-              'Error: Invalid response format - subjects key not found or not a list');
-        }
-      } else {
-        print('Error: ${response.statusCode}');
-      }
-    } catch (e) {
-      print('Error fetching subjects: $e');
-    }
-  }
 
   Future<void> submit() async {
     if (teacherName.value.isNotEmpty &&
@@ -142,7 +154,7 @@ class AddTeacherController extends GetxController {
         'password': password.value,
         'confirmPassword': confirmPassword.value,
         'deptId': int.parse(departmentId.value.toString()),
-        'subjects': selectedSubjectIds.toList(),
+        'subjects': selectedSubjects.map((subject) => subject.id).toList(),
       };
 
       // Post request to add student
@@ -175,6 +187,10 @@ class AddTeacherController extends GetxController {
     }
   }
 
+
+  void clearSelectedSubjects(){
+    selectedSubjects.clear();
+  }
   void clear() {
     teacherName.value = '';
     userName.value = '';

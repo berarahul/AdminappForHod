@@ -12,4 +12,6 @@ class Subjectcardapi {
   static const String subjectViewEndpoint = "dept/subjects";
 
   static const String subjectRemoveEndpoint = "hod/subject/deleteSubject";
+
+  static const String paperCodeNameView= "hod/teacher/subjectIds";
 }

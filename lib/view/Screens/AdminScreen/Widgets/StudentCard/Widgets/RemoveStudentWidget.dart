@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../../constant/AppColors.dart';
-import '../../../../../../model/departmentModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/remove/RemoveStudentController.dart';
 
 class RemoveStudentModal extends StatelessWidget {
@@ -32,27 +32,7 @@ class RemoveStudentModal extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-                // Dropdown for selecting department id
-                // Obx(() {
-                //   return DropdownButton<int>(
-                //       alignment: Alignment.center,
-                //       hint: controller.departmentIdList.isEmpty
-                //           ? const Center(child: CircularProgressIndicator())
-                //           : const Text('Select Department'),
-                //       borderRadius: BorderRadius.circular(8),
-                //       isExpanded: true,
-                //       value: controller.selectedDepartmentId.value,
-                //       onChanged: (newValue) {
-                //         // Update the selectedDepartmentId with the new value
-                //         controller.selectedDepartmentId.value = newValue!;
-                //       },
-                //       items: controller.departmentIdList.map((departmentId) {
-                //         return DropdownMenuItem<int>(
-                //           value: departmentId,
-                //           child: Text(departmentId.toString()),
-                //         );
-                //       }).toList());
-                // }),
+
 
                 Obx(() {
                   if (controller.departments.isEmpty) {
@@ -114,13 +94,13 @@ class RemoveStudentModal extends StatelessWidget {
                     return Expanded(
                       child: Column(
                         children: [
-                          TextField(
-                            onChanged: (value) {},
-                            decoration: const InputDecoration(
-                              labelText: 'Search Students',
-                              border: OutlineInputBorder(),
-                            ),
-                          ),
+                          // TextField(
+                          //   onChanged: (value) {},
+                          //   decoration: const InputDecoration(
+                          //     labelText: 'Search Students',
+                          //     border: OutlineInputBorder(),
+                          //   ),
+                          // ),
                           const SizedBox(height: 20),
                           //Todo: Need to impl this
                           // Row(
@@ -161,7 +141,9 @@ class RemoveStudentModal extends StatelessWidget {
                                           });
                                         },
                                       ));
-                          }),
+                          }
+
+                          ),
                           const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () async {

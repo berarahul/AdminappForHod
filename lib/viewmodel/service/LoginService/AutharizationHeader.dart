@@ -2,15 +2,21 @@ import 'dart:convert';
 import 'dart:developer';
 
 import 'package:attendanceadmin/constant/AppUrl/StudentCard/StudentCardApi.dart';
-import 'package:attendanceadmin/model/LoginModel.dart';
+import 'package:attendanceadmin/constant/AppUrl/SubjectCard/SubjectCardApi.dart';
+import 'package:attendanceadmin/model/login/LoginModel.dart';
+import 'package:attendanceadmin/model/subjectCard/subjectsListModel.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
-import '../../../model/departmentModel.dart';
+import '../../../model/subjectCard/papperCodeNameModel.dart';
+import '../../../model/universalmodel/departmentModel.dart';
+import '../AdminScreenController/WidgetController/TeacherCardServices/update/TeacherUpdateController.dart';
 import 'AuthServices.dart';
 
 class ApiHelper {
   final AuthService authService = AuthService();
+  final UpdateTeacherController updateTeacherController= UpdateTeacherController();
+
 
   Future<Map<String, String>> getHeaders() async {
     final String? token = authService.getToken();
@@ -88,6 +94,12 @@ class ApiHelper {
     return response;
   }
 
+
+
+
+
+
+
   Future<List<DepartmentModel>> fetchDepartments() async {
     final UserModel? userModel = authService.getUserModel();
     final headers = await getHeaders();
@@ -102,4 +114,32 @@ class ApiHelper {
       throw Exception('Failed to load departments');
     }
   }
+
+
+
+
+  Future<List<PaperCodeNameModel>> fetchPaperCodeNameByAPi() async {
+
+
+    final headers = await getHeaders();
+    final response = await get(
+        "${Subjectcardapi.paperCodeNameView}",
+        headers: headers);
+
+    if (response.statusCode == 200) {
+      List<dynamic> jsonData = jsonDecode(response.body);
+      return jsonData.map((item) => PaperCodeNameModel.fromJson(item)).toList();
+    } else {
+      throw Exception('Failed to load PaperCodeName');
+    }
+  }
+
+
+
+
 }
+
+
+
+
+

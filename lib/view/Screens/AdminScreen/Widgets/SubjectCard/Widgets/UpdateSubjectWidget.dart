@@ -1,24 +1,19 @@
-import 'package:attendanceadmin/model/departmentModel.dart';
+import 'package:attendanceadmin/model/universalmodel/departmentModel.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import '../../../../../../model/subjectCard/papperCodeNameModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/update/UpdateStudentController.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/SubjectsCardService/update/updateSubjectController.dart';
+
 // Import your actual path
-
-
-
 class UpdateSubjectModal extends StatelessWidget {
   final Updatesubjectcontroller controller = Get.put(Updatesubjectcontroller());
-
-
   UpdateSubjectModal({super.key}); // Ensure controller is initialized
-
-
   @override
   Widget build(BuildContext context) {
     return Padding(
       padding:
-      EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -33,16 +28,13 @@ class UpdateSubjectModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-
-
-
-
             Obx(() {
               if (controller.departments.isEmpty) {
                 return const CircularProgressIndicator();
               } else {
                 return DropdownButtonFormField<int>(
-                  items: controller.departments.map((DepartmentModel department) {
+                  items:
+                      controller.departments.map((DepartmentModel department) {
                     return DropdownMenuItem<int>(
                       value: department.id,
                       child: Text(department.departmentName),
@@ -63,41 +55,37 @@ class UpdateSubjectModal extends StatelessWidget {
                 );
               }
             }),
-
-
             const SizedBox(height: 20),
-        Obx(() {
-          // Ensure subjectslistmodel.value and subjectslistmodel.value.subjects are not null
-          var subjectsListModel =
-              controller.subjectslistmodel.value;
-          var subjects = subjectsListModel?.subjects ?? [];
+            Obx(() {
+              // Ensure subjectslistmodel.value and subjectslistmodel.value.subjects are not null
+              var subjectsListModel = controller.subjectslistmodel.value;
+              var subjects = subjectsListModel?.subjects ?? [];
 
-          return Expanded(
-            child: subjects.isEmpty
-                ? const Center(
-                child: CircularProgressIndicator())
-                : ListView.builder(
-              itemCount: subjects.length,
-              itemBuilder: (context, index) {
-                var subject = subjects[index];
+              return Expanded(
+                child: subjects.isEmpty
+                    ? const Center(child: CircularProgressIndicator())
+                    : ListView.builder(
+                        itemCount: subjects.length,
+                        itemBuilder: (context, index) {
+                          var subject = subjects[index];
 
-                return  ListTile(
-                  title: Text(subject.subName ??
-                      'Unknown'),
-                // Provide a default value for subName if null
-                  trailing:IconButton(
-                    icon: const Icon(Icons.edit),
-                    onPressed: () {
-                      _showEditStudentModal(context, index);
-                    },
-                  ),
-                );
-              },
-            ),
-          );
-        }),
+                          return ListTile(
+                            title: Text(subject.subName ?? 'Unknown'),
+                            // Provide a default value for subName if null
+                            trailing: IconButton(
+                              icon: const Icon(Icons.edit),
+                              onPressed: () {
 
+                                controller.selectedPaperCode.value = subject.paperId ?? 0;
 
+                                _showEditStudentModal(context, index);
+                              },
+                            ),
+                          );
+                        },
+                      ),
+              );
+            }),
           ],
         ),
       ),
@@ -110,7 +98,7 @@ class UpdateSubjectModal extends StatelessWidget {
       isScrollControlled: true,
       builder: (context) => Padding(
         padding:
-        EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
         child: EditSubjectModal(index: index),
       ),
     );
@@ -131,18 +119,20 @@ final Updatesubjectcontroller controller = Get.find<Updatesubjectcontroller>();
 class _EditSubjectModalState extends State<EditSubjectModal> {
   @override
   void initState() {
-    // controller.departmentController.text =
-    //     controller.selectedDepartment.value.toString();
-    // controller.semesterController.text =
-    //     controller.selectedSemester.value.toString();
-    // controller.nameController.text = controller.studentsList[widget.index];
-    // controller.rollController.text =
-    //     controller.studentRollNumber[widget.index].toString();
+    controller.subjectIdController.text =
+        controller.subjectIds[widget.index].toString();
 
-    controller.subjectIdController.text=controller.subjectIds[widget.index].toString();
-    controller.subjectNameController.text=controller.subjectNames[widget.index];
-    controller.departmentIdController.text=controller.departmentId.value.toString();
-   controller.semesterIdController.text=controller.semesterIds[widget.index].toString();
+    controller.subjectNameController.text =
+        controller.subjectNames[widget.index];
+    controller.departmentIdController.text =
+        controller.departmentId.value.toString();
+    controller.semesterIdController.text =
+        controller.semesterIds[widget.index].toString();
+
+    controller.paperNameController.text=controller.paperNames[widget.index];
+
+    controller.selectedPaperCode.value = controller.paperIds[widget.index];
+
     super.initState();
   }
 
@@ -162,13 +152,13 @@ class _EditSubjectModalState extends State<EditSubjectModal> {
             ),
           ),
           const SizedBox(height: 20),
-          TextField(
-            controller: controller.subjectIdController,
-            decoration: const InputDecoration(
-              labelText: 'Subject ID',
-              border: OutlineInputBorder(),
-            ),
-          ),
+          // TextField(
+          //   controller: controller.subjectIdController,
+          //   decoration: const InputDecoration(
+          //     labelText: 'Subject ID',
+          //     border: OutlineInputBorder(),
+          //   ),
+          // ),
           const SizedBox(height: 20),
           TextField(
             controller: controller.subjectNameController,
@@ -194,6 +184,34 @@ class _EditSubjectModalState extends State<EditSubjectModal> {
               border: OutlineInputBorder(),
             ),
           ),
+          const SizedBox(height: 20),
+          Obx(() {
+            if (controller.PaperCodeName.isEmpty) {
+              return const CircularProgressIndicator();
+            } else {
+              return DropdownButtonFormField<int>(
+                items: controller.PaperCodeName.map((PaperCodeNameModel paperCodeName) {
+                  return DropdownMenuItem<int>(
+                    value: paperCodeName.id,
+                    child: Text(paperCodeName.subjectIdName),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  if (value != null) {
+                    controller.setPaperCodeNameId(value);
+                  }
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Paper Code Name',
+                  border: OutlineInputBorder(),
+                ),
+                value: controller.PaperCodeNameId.value == 0
+                    ? null
+                    : controller.PaperCodeNameId.value,
+              );
+            }
+          }),
+
 
 
           const SizedBox(height: 20),

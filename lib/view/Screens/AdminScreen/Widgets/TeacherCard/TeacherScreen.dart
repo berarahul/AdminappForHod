@@ -73,15 +73,19 @@ class TeacherActionsScreen extends StatelessWidget {
     final hour = DateTime.now().hour;
     List<Color> gradientColors = [];
 
-    if (hour < 12) {
+    if (hour >= 6 && hour < 12) {
       // Morning gradient
       gradientColors = [Colors.yellow, Colors.lightBlueAccent];
-    } else if (hour < 18) {
+    } else if (hour >= 12 && hour < 17) {
       // Afternoon gradient
       gradientColors = [Colors.blue, Colors.lightBlue];
-    } else {
+    }else if (hour >= 17 && hour < 22) {
+      gradientColors=[AppColors.softRed,AppColors.peach];
+    }
+
+    else {
       // Evening gradient
-      gradientColors = [Colors.deepPurple, Colors.purple];
+      gradientColors = [Colors.indigo, Colors.black];
     }
 
     return BoxDecoration(
@@ -165,16 +169,21 @@ class StudentActionWidget extends StatelessWidget {
     final hour = DateTime.now().hour;
     List<Color> cardColors = [];
 
-    if (hour < 12) {
+    if (hour >= 6 && hour < 12) {
       // Morning gradient
       cardColors = [Colors.yellow, Colors.lightBlueAccent];
-    } else if (hour < 18) {
+    } else if (hour >= 12 && hour < 17) {
       // Afternoon gradient
-      cardColors = [Colors.blue, Colors.lightBlue];
-    } else {
-      // Evening gradient
-      cardColors = [Colors.deepPurple, Colors.purple];
+      cardColors = [Colors.orangeAccent, Colors.yellowAccent];
+    }else if (hour >= 17 && hour < 22) {
+      cardColors=[AppColors.softRed,AppColors.peach];
     }
+
+    else {
+      // Evening gradient
+      cardColors = [Colors.indigo, Colors.black];
+    }
+
 
     return Card(
       color: Colors.white.withOpacity(0.3), // Semi-transparent white

@@ -38,4 +38,10 @@ class AppColors{
   static const Color backgroundColor = Color(0xFFF5F5F5);
   static const Color redColor = Color(0xFFDC0000);
 
+
+
+  static const Color softRed = Color(0xFFFF7E5F);
+  static const Color peach = Color(0xFFFEB47B);
+
+
 }

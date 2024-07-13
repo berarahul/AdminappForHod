@@ -1,8 +1,12 @@
-import 'package:dropdown_search/dropdown_search.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
+import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
+import 'package:multi_select_flutter/util/multi_select_item.dart';
 
-import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/update/UpdateStudentController.dart';
+import '../../../../../../model/subjectCard/subjectsListModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/update/TeacherUpdateController.dart';
 
 class UpdateTeacherModal extends StatelessWidget {
@@ -28,43 +32,49 @@ class UpdateTeacherModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            Obx(() => DropdownButton<int>(
-              hint: controller.departmentIdList.isEmpty
-                  ? const Text('Loading...')
-                  : const Text('Select Department'),
-              isExpanded: true,
-              value: controller.selectedDepartmentId.value,
-              onChanged: (newValue) async {
-                controller.selectedDepartmentId.value = newValue!;
-                // Fetch students only for the selected department
-                await  controller.fetchAllTeacher();
-
-              },
-              items: controller.departmentIdList.map((department) {
-                return DropdownMenuItem<int>(
-                  value: department,
-                  child: Text(department.toString()),
+            Obx(() {
+              if (controller.departments.isEmpty) {
+                return const CircularProgressIndicator();
+              } else {
+                return DropdownButtonFormField<int>(
+                  items: controller.departments.map((DepartmentModel department) {
+                    return DropdownMenuItem<int>(
+                      value: department.id,
+                      child: Text(department.departmentName),
+                    );
+                  }).toList(),
+                  onChanged: (value) {
+                    if (value != null) {
+                      controller.setDepartmentId(value);
+                      controller.fetchAllTeacher();
+                    }
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Department',
+                    border: OutlineInputBorder(),
+                  ),
+                  value: controller.departmentId.value == 0
+                      ? null
+                      : controller.departmentId.value,
                 );
-              }).toList(),
-            )),
+              }
+            }),
             const SizedBox(height: 20),
-            Obx(() => controller.selectedDepartmentId.value != null
+            Obx(() => controller.departmentId.value != null
                 ? Expanded(
               child: Obx(() {
                 if (controller.teacherList.isEmpty) {
-                  return const Center(child: Text('No students found'));
+                  return const Center(child: Text('No teachers found'));
                 } else {
                   return ListView.builder(
                     itemCount: controller.teacherList.length,
                     itemBuilder: (context, index) {
                       return ListTile(
                         title: Text(controller.teacherList[index]),
-                        subtitle: Text(
-                            'Teacher id: ${controller.teacherId[index]}'),
+                        subtitle: Text('Teacher id: ${controller.teacherId[index]}'),
                         trailing: IconButton(
                           icon: const Icon(Icons.edit),
                           onPressed: () async {
-
                             _showEditTeacherModal(context, index);
                           },
                         ),
@@ -99,19 +109,17 @@ class EditTeacherModal extends StatefulWidget {
   const EditTeacherModal({super.key, required this.index});
 
   @override
-  State<EditTeacherModal> createState() => _EditStudentModalState();
+  State<EditTeacherModal> createState() => _EditTeacherModalState();
 }
 
 final UpdateTeacherController controller = Get.find<UpdateTeacherController>();
 
-class _EditStudentModalState extends State<EditTeacherModal> {
+class _EditTeacherModalState extends State<EditTeacherModal> {
   @override
   void initState() {
-
     controller.nameController.text = controller.teacherList[widget.index];
-    controller.teacherIdController.text = controller.teacherId[widget.index].toString();
-
-
+    controller.teacherIdController.text =
+        controller.teacherId[widget.index].toString();
     super.initState();
   }
 
@@ -139,106 +147,90 @@ class _EditStudentModalState extends State<EditTeacherModal> {
             ),
           ),
           const SizedBox(height: 20),
-          // Textform field for roll number
-          TextField(
-            controller: controller.teacherIdController,
-            decoration: const InputDecoration(
-              labelText: 'Teacher Id',
-              border: OutlineInputBorder(),
-            ),
-          ),
-
+          // TextField(
+          //   controller: controller.teacherIdController,
+          //   decoration: const InputDecoration(
+          //     labelText: 'Teacher ID',
+          //     border: OutlineInputBorder(),
+          //   ),
+          // ),
           const SizedBox(height: 20),
-          // const Text('New Subjects'),
-          //
-          // Obx(
-          //       () => DropdownSearch<String>.multiSelection(
-          //     items: controller.subjectsList.toList(), // Use fetched subjects
-          //     dropdownBuilder: (context, selectedItems) {
-          //       return Wrap(
-          //         spacing: 8.0,
-          //         runSpacing: 8.0,
-          //         children: selectedItems
-          //             .map((item) => Chip(label: Text(item)))
-          //             .toList(),
-          //       );
-          //     },
-          //     popupProps: PopupPropsMultiSelection.menu(
-          //       itemBuilder: (context, item, isSelected) {
-          //         return ListTile(
-          //           title: Text(item),
-          //           selected: isSelected,
-          //         );
-          //       },
-          //     ),
-          //     onChanged: (List<String> value) {
-          //       controller.fetchallSubjects();
-          //       List<int> selectedIds =
-          //       value.map((String item) => int.parse(item)).toList();
-          //       controller.selectedSubjectIds.value = selectedIds;
-          //     },
-          //     selectedItems: controller.selectedSubjectIds
-          //         .map((id) => id.toString())
-          //         .toList(),
-          //   ),
-          // ),
-          // const SizedBox(height: 20),
-          //
-          // const SizedBox(height: 20),
-          // const Text('Remove Subjects'),
-          // Obx(
-          //       () => DropdownSearch<String>.multiSelection(
-          //     items: controller.subjectsList.toList(), // Use fetched subjects
-          //     dropdownBuilder: (context, selectedItems) {
-          //       return Wrap(
-          //         spacing: 8.0,
-          //         runSpacing: 8.0,
-          //         children: selectedItems
-          //             .map((item) => Chip(label: Text(item)))
-          //             .toList(),
-          //       );
-          //     },
-          //     popupProps: PopupPropsMultiSelection.menu(
-          //       itemBuilder: (context, item, isSelected) {
-          //         return ListTile(
-          //           title: Text(item),
-          //           selected: isSelected,
-          //         );
-          //       },
-          //     ),
-          //     onChanged: (List<String> value) {
-          //       controller.fetchallSubjects();
-          //       List<int> selectedIds =
-          //       value.map((String item) => int.parse(item)).toList();
-          //       controller.selectedSubjectIds.value = selectedIds;
-          //     },
-          //     selectedItems: controller.selectedSubjectIds
-          //         .map((id) => id.toString())
-          //         .toList(),
-          //   ),
-          // ),
-          // const SizedBox(height: 20),
-          //
+          ElevatedButton(
+            onPressed: () {
+              controller.fetchsubjects();
+              _showSubjectsDialog(context);
+            },
+            child: const Text('Select Subjects'),
+          ),
+          const SizedBox(height: 20),
 
-
+          ElevatedButton(
+            onPressed: () {
+              controller.secondtimefetchsubjects();
+              _showSubjectsDialog(context);
+            },
+            child: const Text('Remove Subjects'),
+          ),
           const SizedBox(height: 20),
           ElevatedButton(
             onPressed: () async {
               await controller.updatedTeacher();
             },
-            child: const Text('Save'),
+            child: const Text('Update Teacher'),
           ),
         ],
       ),
     );
   }
-}
+
+  void _showSubjectsDialog(BuildContext context) {
+    controller.fetchsubjects().then((_) {
+      controller.clearSelectedSubjects();
+
+      showDialog(
+        context: context,
+        builder: (context) {
+          return MultiSelectDialog(
+            backgroundColor: Colors.white,
+            items: controller.subjects.map((subject) =>
+                MultiSelectItem(subject, subject.subName!)).toList(),
+            initialValue: controller.selectedSubjects.toList(),
+            onConfirm: (values) {
+              setState(() {
+                controller.selectedSubjects.assignAll(
+                    values.cast<SubjectModel>());
+                print('Selected Subjects: ${controller.selectedSubjects.map((
+                    subject) => subject.id).toList()}');
+              });
+            },
+          );
+        },
+      );
+    });
+  }}
 
 
-
-
-
-
-
-
-
+// void _showRemoveSubjectsDialog(BuildContext context) {
+//   controller.secondtimefetchsubjects().then((_) {
+//     controller.clearselectedRemoveSubjects();
+//
+//     showDialog(
+//       context: context,
+//       builder: (context) {
+//         return MultiSelectDialog(
+//           items: controller.subjects2.map((subject) =>
+//               MultiSelectItem(subject, subject.subName!)).toList(),
+//           initialValue: controller.selectedRemoveSubjects.toList(),
+//           onConfirm: (values) {
+//             setState(() {
+//               controller.selectedRemoveSubjects.assignAll(
+//                   values.cast<SubjectModel>());
+//               print('Selected Subjects: ${controller.selectedRemoveSubjects.map((
+//                   subject) => subject.id).toList()}');
+//             });
+//           },
+//         );
+//       },
+//     );
+//   });
+// }

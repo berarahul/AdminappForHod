@@ -22,15 +22,20 @@ class AdminScreen extends StatelessWidget {
     final String greeting;
     final List<Color> gradientColors;
 
-    if (now.hour >= 5 && now.hour < 12) {
+    if (now.hour >= 6 && now.hour < 12) {
       greeting = 'Good Morning';
       gradientColors = [Colors.yellow, Colors.lightBlueAccent];
-    } else if (now.hour >= 12 && now.hour < 18) {
+    } else if (now.hour >= 12 && now.hour < 17) {
       greeting = 'Good Afternoon';
       gradientColors = [Colors.orangeAccent, Colors.yellowAccent];
-    } else {
+    } else if (now.hour >= 17 && now.hour < 22){
       greeting = 'Good Evening';
-      gradientColors = [Colors.purpleAccent, Colors.deepPurpleAccent];
+      gradientColors = [AppColors.softRed, AppColors.peach];
+    }
+
+    else {
+      greeting = 'Good Night';
+      gradientColors = [Colors.indigo, Colors.black];
     }
 
     return Scaffold(
@@ -100,21 +105,21 @@ class AdminScreen extends StatelessWidget {
           showDialog(
             context: context,
             builder: (context) => AlertDialog(
-              title: Text('Logout'),
-              content: Text('Are you sure you want to log out?'),
+              title: const Text('Logout'),
+              content: const Text('Are you sure you want to log out?'),
               actions: [
                 TextButton(
                   onPressed: () {
                     Get.back(); // Close the dialog
                   },
-                  child: Text('Cancel'),
+                  child: const Text('Cancel'),
                 ),
                 TextButton(
                   onPressed: () {
                     authService.logout();
                     Get.offAllNamed('/login');
                   },
-                  child: Text('Logout'),
+                  child: const Text('Logout'),
                 ),
               ],
             ),

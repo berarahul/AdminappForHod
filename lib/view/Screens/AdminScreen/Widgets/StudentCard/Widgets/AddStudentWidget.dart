@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import '../../../../../../constant/AppColors.dart';
-import '../../../../../../model/departmentModel.dart';
+import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/add/AddStudentWidgetController.dart';
 
 class AddStudentModal extends StatelessWidget {
@@ -74,7 +74,14 @@ class AddStudentModal extends StatelessWidget {
               border: OutlineInputBorder(),
             ),
           ),
-          const SizedBox(height: 20),
+
+
+
+
+
+
+
+        const SizedBox(height: 20),
 
 
           Obx(() {
