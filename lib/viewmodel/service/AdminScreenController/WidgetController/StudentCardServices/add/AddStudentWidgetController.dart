@@ -135,6 +135,7 @@ class AddStudentController extends GetxController {
       var fetchedDepartments = await ApiHelper().fetchDepartments();
       departments.assignAll(fetchedDepartments);
     } catch (e) {
+      print(e);
       Get.snackbar('Error', 'Failed to load departments');
     }
   }

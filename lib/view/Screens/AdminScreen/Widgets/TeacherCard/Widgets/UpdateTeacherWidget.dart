@@ -1,3 +1,4 @@
+import 'package:attendanceadmin/constant/AppColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -173,10 +174,11 @@ class _EditTeacherModalState extends State<EditTeacherModal> {
           ),
           const SizedBox(height: 20),
           ElevatedButton(
+                 
             onPressed: () async {
               await controller.updatedTeacher();
             },
-            child: const Text('Update Teacher'),
+            child: const Text('Update Teacher',style: TextStyle(color: Colors.white),),
           ),
         ],
       ),

@@ -111,6 +111,7 @@ class ApiHelper {
       List<dynamic> jsonData = jsonDecode(response.body);
       return jsonData.map((item) => DepartmentModel.fromJson(item)).toList();
     } else {
+      print("Error $response");
       throw Exception('Failed to load departments');
     }
   }

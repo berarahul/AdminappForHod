@@ -128,50 +128,13 @@ class AddTeacherModal extends StatelessWidget {
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.appcolor, // Background color
               ),
-              child: const Text('Submit'),
+              child: const Text('Submit',style: TextStyle(color: Colors.white),),
             ),
           ],
         ),
       ),
     );
   }
-
-//   void _showSubjectsDialog(BuildContext context) {
-//     controller.fetchsubjects().then((_) {
-//       controller.clearSelectedSubjects();
-//
-//       showDialog(
-//         context: context,
-//         builder: (context) {
-//           return AlertDialog(
-//             title: Text('Select Subjects'),
-//             backgroundColor: Colors.white,
-//             content: MultiSelectDialog(
-//               items: controller.subjects
-//                   .map((subject) =>
-//                   MultiSelectItem(
-//                     subject,
-//                     subject.subName!,
-//                   ))
-//                   .toList(),
-//               initialValue: controller.selectedSubjects.toList(),
-//               onConfirm: (values) {
-//                 // Update selected subjects
-//                 controller.selectedSubjects.assignAll(
-//                     values.cast<SubjectModel>());
-//                 print('Selected Subjects: ${controller.selectedSubjects.map((
-//                     subject) => subject.id).toList()}');
-//                 // Dismiss dialog
-//                 // Navigator.pop(context);
-//               },
-//             ),
-//
-//           );
-//         },
-//       );
-//     });
-//   }
-// }
 
 
   void _showSubjectsDialog(BuildContext context) {
