@@ -57,7 +57,7 @@ class AuthService {
 
             await storage.write('token', token);
             await storage.write('userModel', userModel.toJson());
-
+            await storage.write('userId', userId); // Store userId
             return userModel;
           } else {
             throw Exception('Unauthorized access');
@@ -98,6 +98,10 @@ class AuthService {
       return UserModel.fromJson(json);
     }
     return null;
+  }
+  int? getUserId() {
+    return storage.read<int>('userId');
+
   }
 
   Future<void> logout() async {

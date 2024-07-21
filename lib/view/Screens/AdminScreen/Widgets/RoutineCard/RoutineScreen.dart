@@ -1,25 +1,21 @@
+import 'package:attendanceadmin/viewmodel/service/AdminScreenController/WidgetController/RoutineCardServices/RoutineScreenController.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:attendanceadmin/constant/AppColors.dart';
-import '../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/StudentScreenController.dart';
-import 'Widgets/AddStudentWidget.dart';
-import 'Widgets/RemoveStudentFromLastSemWidget.dart';
-import 'Widgets/RemoveStudentWidget.dart';
-import 'Widgets/SemesterEdit.dart';
-import 'Widgets/UpdateStudentWidget.dart';
+import 'Widgets/AddClassWidget.dart';
+import 'Widgets/Dropdown/DropDownForRoutine.dart'; // Rename these imports as needed
 
-class StudentActionsScreen extends StatelessWidget {
-  final StudentController controller = Get.put(StudentController());
 
-  StudentActionsScreen({super.key});
+class RoutineScreen extends StatelessWidget {
+  final Routinescreencontroller controller = Get.put(Routinescreencontroller());
+
+  RoutineScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       extendBodyBehindAppBar: true, // Add this line
-
       body: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: _buildBackgroundDecoration(),
@@ -29,7 +25,7 @@ class StudentActionsScreen extends StatelessWidget {
             const Padding(
               padding: EdgeInsets.only(top: 40.0, bottom: 20.0),
               child: Text(
-                'Students',
+                'Routine Management',
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
@@ -48,7 +44,7 @@ class StudentActionsScreen extends StatelessWidget {
                         onTap: () {
                           _handleAction(context, controller.actions[index]);
                         },
-                        child: StudentActionWidget(
+                        child: RoutineActionWidget(
                           actionText: controller.actions[index],
                           index: index,
                         ),
@@ -69,16 +65,12 @@ class StudentActionsScreen extends StatelessWidget {
     List<Color> gradientColors = [];
 
     if (hour >= 6 && hour < 12) {
-      // Morning gradient
       gradientColors = [Colors.yellow, Colors.lightBlueAccent];
     } else if (hour >= 12 && hour < 17) {
-      // Afternoon gradient
       gradientColors = [Colors.blue, Colors.lightBlue];
-    }else if (hour >= 17 && hour < 22) {
-      gradientColors=[AppColors.softRed,AppColors.peach];
-    }
-    else {
-      // Evening gradient
+    } else if (hour >= 17 && hour < 22) {
+      gradientColors = [AppColors.softRed, AppColors.peach];
+    } else {
       gradientColors = [Colors.indigo, Colors.black];
     }
 
@@ -92,25 +84,19 @@ class StudentActionsScreen extends StatelessWidget {
   }
 
   void _handleAction(BuildContext context, String action) {
-    if (action == 'Add Student') {
-      controller.addStudent();
-      _showAddStudentModal(context);
-    } else if (action == 'Remove Student') {
-      controller.removeStudent();
-      _showRemoveStudentModal(context);
-    } else if (action == 'Update Student') {
-      controller.updateStudent();
-      _showUpdateStudentModal(context);
-    } else if (action == 'Remove student from last sem') {
-      controller.removeStudentFromLastSem();
-      _showRemoveStudentFromLastSemModal(context);
-    } else if (action == 'Student Transfer') {
-      controller.semesterAdd();
-      _showAddSemesterModal(context);
+    if (action == 'Add Class') {
+      controller.addClass();
+      _showAddClassModal(context);
+    } else if (action == 'View and Update Routine') {
+      controller.updateRoutine();
+      _showUpdateRoutineModal(context);
+    } else if (action == 'Remove Class') {
+      controller.removeClass();
+      _showRemoveClassModal(context);
     }
   }
 
-  void _showAddStudentModal(BuildContext context) {
+  void _showAddClassModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -118,12 +104,12 @@ class StudentActionsScreen extends StatelessWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: AddStudentModal(),
+        child: AddClassScreen(),
       ),
     );
   }
 
-  void _showRemoveStudentModal(BuildContext context) {
+  void _showUpdateRoutineModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -131,12 +117,12 @@ class StudentActionsScreen extends StatelessWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: RemoveStudentModal(),
+       child: DropdownScreenForRoutine(),
       ),
     );
   }
 
-  void _showUpdateStudentModal(BuildContext context) {
+  void _showRemoveClassModal(BuildContext context) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -144,43 +130,17 @@ class StudentActionsScreen extends StatelessWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).viewInsets.bottom,
         ),
-        child: UpdateStudentModal(),
-      ),
-    );
-  }
-
-  void _showRemoveStudentFromLastSemModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: Removestudentfromlastsemwidget(),
-      ),
-    );
-  }
-
-  void _showAddSemesterModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        child: AddSemesterScreen(),
+        // child: RemoveClassModal(),
       ),
     );
   }
 }
 
-class StudentActionWidget extends StatelessWidget {
+class RoutineActionWidget extends StatelessWidget {
   final String actionText;
   final int index;
 
-  const StudentActionWidget({
+  const RoutineActionWidget({
     Key? key,
     required this.actionText,
     required this.index,
@@ -191,23 +151,17 @@ class StudentActionWidget extends StatelessWidget {
     final hour = DateTime.now().hour;
     List<Color> cardColors = [];
     if (hour >= 6 && hour < 12) {
-      // Morning gradient
       cardColors = [Colors.yellow, Colors.lightBlueAccent];
     } else if (hour >= 12 && hour < 17) {
-      // Afternoon gradient
       cardColors = [Colors.orangeAccent, Colors.yellowAccent];
-    }else if (hour >= 17 && hour < 22) {
-      cardColors=[AppColors.softRed,AppColors.peach];
-    }
-
-    else {
-      // Evening gradient
+    } else if (hour >= 17 && hour < 22) {
+      cardColors = [AppColors.softRed, AppColors.peach];
+    } else {
       cardColors = [Colors.indigo, Colors.black];
     }
 
-
     return Card(
-      color: Colors.white.withOpacity(0.3), // Semi-transparent white
+      color: Colors.white.withOpacity(0.3),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -239,20 +193,14 @@ class StudentActionWidget extends StatelessWidget {
   Widget _buildIconForAction(String actionText) {
     IconData iconData;
     switch (actionText) {
-      case 'Add Student':
+      case 'Add Class':
         iconData = Icons.add_circle_outline;
         break;
-      case 'Remove Student':
-        iconData = Icons.remove_circle_outline;
-        break;
-      case 'Update Student':
+      case 'View and Update Routine':
         iconData = Icons.update;
         break;
-      case 'Remove student from last sem':
+      case 'Remove Class':
         iconData = Icons.delete_outline;
-        break;
-      case 'Student Transfer':
-        iconData = Icons.school;
         break;
       default:
         iconData = Icons.error_outline;

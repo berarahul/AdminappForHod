@@ -1,11 +1,9 @@
-import 'package:attendanceadmin/constant/AppColors.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:multi_select_flutter/dialog/mult_select_dialog.dart';
 import 'package:multi_select_flutter/util/multi_select_item.dart';
-
 import '../../../../../../model/subjectCard/subjectsListModel.dart';
 import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/update/TeacherUpdateController.dart';
@@ -211,28 +209,3 @@ class _EditTeacherModalState extends State<EditTeacherModal> {
     });
   }}
 
-
-// void _showRemoveSubjectsDialog(BuildContext context) {
-//   controller.secondtimefetchsubjects().then((_) {
-//     controller.clearselectedRemoveSubjects();
-//
-//     showDialog(
-//       context: context,
-//       builder: (context) {
-//         return MultiSelectDialog(
-//           items: controller.subjects2.map((subject) =>
-//               MultiSelectItem(subject, subject.subName!)).toList(),
-//           initialValue: controller.selectedRemoveSubjects.toList(),
-//           onConfirm: (values) {
-//             setState(() {
-//               controller.selectedRemoveSubjects.assignAll(
-//                   values.cast<SubjectModel>());
-//               print('Selected Subjects: ${controller.selectedRemoveSubjects.map((
-//                   subject) => subject.id).toList()}');
-//             });
-//           },
-//         );
-//       },
-//     );
-//   });
-// }

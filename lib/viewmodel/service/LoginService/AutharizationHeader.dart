@@ -55,8 +55,10 @@ class ApiHelper {
       body: jsonEncode(body),
     );
     if (response.statusCode == 201) {
+      Get.snackbar("Success", "Data Posted Successfully");
       print('Data posted successfully');
     } else {
+      Get.snackbar("OOps", "Failed to Post Data");
       print('Failed to post data, status code: ${response.statusCode}');
     }
   }
@@ -93,12 +95,6 @@ class ApiHelper {
 
     return response;
   }
-
-
-
-
-
-
 
   Future<List<DepartmentModel>> fetchDepartments() async {
     final UserModel? userModel = authService.getUserModel();
