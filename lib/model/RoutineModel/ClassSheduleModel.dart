@@ -46,7 +46,7 @@
 
 class Schedule {
   late String day;
-  late int id;
+  late  int id;
   late final String subName;
   late String roomName;
   late final String teacherName;

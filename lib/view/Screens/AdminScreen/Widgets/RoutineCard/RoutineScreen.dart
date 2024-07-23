@@ -94,6 +94,11 @@ class RoutineScreen extends StatelessWidget {
       controller.removeClass();
       _showRemoveClassModal(context);
     }
+    else if(action == 'Delete Routine') {
+      controller.deleteRoutine();
+      _showDeleteRoutineModal(context);
+
+    }
   }
 
   void _showAddClassModal(BuildContext context) {
@@ -134,6 +139,20 @@ class RoutineScreen extends StatelessWidget {
       ),
     );
   }
+
+  void _showDeleteRoutineModal(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) => Padding(
+        padding: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom,
+        ),
+        // child: RemoveClassModal(),
+      ),
+    );
+  }
+
 }
 
 class RoutineActionWidget extends StatelessWidget {
@@ -201,6 +220,9 @@ class RoutineActionWidget extends StatelessWidget {
         break;
       case 'Remove Class':
         iconData = Icons.delete_outline;
+        break;
+        case 'Delete Routine':
+          iconData = Icons.delete;
         break;
       default:
         iconData = Icons.error_outline;

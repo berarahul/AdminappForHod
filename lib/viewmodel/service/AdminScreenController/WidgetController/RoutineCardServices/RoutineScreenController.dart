@@ -5,6 +5,7 @@ class Routinescreencontroller extends GetxController {
     'Add Class',
     'View and Update Routine',
     'Remove Class',
+    'Delete Routine',
 
   ].obs;
 
@@ -19,7 +20,9 @@ class Routinescreencontroller extends GetxController {
     // Your logic to remove a student
   }
 
+void deleteRoutine() {
 
+}
 
 
 }
