@@ -31,7 +31,9 @@ class DepartmentDropdown extends StatelessWidget {
             }
           },
           decoration: InputDecoration(
-            labelText: 'Select Department',
+            hintStyle: TextStyle(color: Colors.black),
+            hintText: 'Select department',
+            // labelText: 'Select Department',
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(10),
             ),
@@ -40,7 +42,7 @@ class DepartmentDropdown extends StatelessWidget {
             fillColor: Colors.grey.shade200,
           ),
           dropdownColor: Colors.white,
-          icon: Icon(Icons.arrow_drop_down),
+          icon: Icon(Icons.arrow_drop_down,color: Colors.black,),
           iconSize: 30,
           style: TextStyle(color: Colors.black, fontSize: 16),
           isExpanded: true,

@@ -31,8 +31,8 @@ class TeacherActionsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
+            const Padding(
+              padding: EdgeInsets.only(top: 40.0, bottom: 20.0),
               child: Text(
                 'Teacher',
                 style: TextStyle(
@@ -98,10 +98,12 @@ class TeacherActionsScreen extends StatelessWidget {
   }
 
   void _handleAction(BuildContext context, String action) {
-    if (action == 'Add Teacher') {
-      controller.addTeacher();
-      _showAddStudentModal(context);
-    } else if (action == 'Remove Teacher') {
+    // if (action == 'Add Teacher') {
+    //   controller.addTeacher();
+    //   _showAddStudentModal(context);
+    // }
+
+     if (action == 'Remove Teacher') {
       controller.removeTeacher();
       _showRemoveStudentModal(context);
     } else if (action == 'Update Teacher') {
@@ -218,9 +220,9 @@ class StudentActionWidget extends StatelessWidget {
   Widget _buildIconForAction(String actionText) {
     IconData iconData;
     switch (actionText) {
-      case 'Add Teacher':
-        iconData = Icons.add_circle_outline;
-        break;
+      // case 'Add Teacher':
+      //   iconData = Icons.add_circle_outline;
+      //   break;
       case 'Remove Teacher':
         iconData = Icons.remove_circle_outline;
         break;

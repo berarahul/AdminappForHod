@@ -90,14 +90,6 @@ class RoutineScreen extends StatelessWidget {
     } else if (action == 'View and Update Routine') {
       controller.updateRoutine();
       _showUpdateRoutineModal(context);
-    } else if (action == 'Remove Class') {
-      controller.removeClass();
-      _showRemoveClassModal(context);
-    }
-    else if(action == 'Delete Routine') {
-      controller.deleteRoutine();
-      _showDeleteRoutineModal(context);
-
     }
   }
 
@@ -127,31 +119,10 @@ class RoutineScreen extends StatelessWidget {
     );
   }
 
-  void _showRemoveClassModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        // child: RemoveClassModal(),
-      ),
-    );
-  }
 
-  void _showDeleteRoutineModal(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (context) => Padding(
-        padding: EdgeInsets.only(
-          bottom: MediaQuery.of(context).viewInsets.bottom,
-        ),
-        // child: RemoveClassModal(),
-      ),
-    );
-  }
+
+
+
 
 }
 
@@ -217,12 +188,6 @@ class RoutineActionWidget extends StatelessWidget {
         break;
       case 'View and Update Routine':
         iconData = Icons.update;
-        break;
-      case 'Remove Class':
-        iconData = Icons.delete_outline;
-        break;
-        case 'Delete Routine':
-          iconData = Icons.delete;
         break;
       default:
         iconData = Icons.error_outline;
