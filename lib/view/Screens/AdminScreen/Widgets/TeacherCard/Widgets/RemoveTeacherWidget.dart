@@ -74,7 +74,7 @@ class RemoveTeacherModel extends StatelessWidget {
                             return Expanded(
                               child: controller.teachersList.isEmpty
                                   ? const Center(
-                                child: CircularProgressIndicator(),
+                                child: Text("Data Not Available"),
                               )
                                   : ListView.builder(
                                 shrinkWrap: true,

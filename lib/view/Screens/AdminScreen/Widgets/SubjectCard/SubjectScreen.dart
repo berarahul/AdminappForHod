@@ -33,8 +33,8 @@ class SubjectActionScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(top: 40.0, bottom: 20.0),
+            const Padding(
+              padding: EdgeInsets.only(top: 40.0, bottom: 20.0),
               child: Text(
                 'Subject',
                 style: TextStyle(

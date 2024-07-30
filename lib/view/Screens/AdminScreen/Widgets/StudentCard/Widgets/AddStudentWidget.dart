@@ -44,7 +44,7 @@ class AddStudentModal extends StatelessWidget {
               controller.setRollNum(int.parse(value));
             },
             decoration: const InputDecoration(
-              labelText: 'Roll Num',
+              labelText: 'Roll',
               border: OutlineInputBorder(),
             ),
           ),
@@ -61,8 +61,6 @@ class AddStudentModal extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-
-
           TextField(
             keyboardType: TextInputType.number,
             textInputAction: TextInputAction.done,
@@ -70,20 +68,11 @@ class AddStudentModal extends StatelessWidget {
               controller.setSemesterId(int.parse(value));
             },
             decoration: const InputDecoration(
-              labelText: 'Semester ID',
+              labelText: 'Semester',
               border: OutlineInputBorder(),
             ),
           ),
-
-
-
-
-
-
-
-        const SizedBox(height: 20),
-
-
+          const SizedBox(height: 20),
           Obx(() {
             if (controller.departments.isEmpty) {
               return const CircularProgressIndicator();
@@ -110,15 +99,15 @@ class AddStudentModal extends StatelessWidget {
               );
             }
           }),
-
-
           const SizedBox(height: 20),
           ElevatedButton(
-            onPressed: () async => await controller.submit(),
+            onPressed: () async {
+              await controller.submit();
+            },
             style: ElevatedButton.styleFrom(
               backgroundColor: AppColors.appcolor, // Background color
             ),
-            child: const Text('Submit'),
+            child: const Center(child: Text('Submit',style: TextStyle(color: Colors.white),),),
           ),
         ],
       ),

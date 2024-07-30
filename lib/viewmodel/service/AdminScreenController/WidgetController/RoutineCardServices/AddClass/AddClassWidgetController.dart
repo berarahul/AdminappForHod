@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:attendanceadmin/constant/AppUrl/api_const.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -161,6 +160,66 @@ class AddClassController extends GetxController {
   }
 
   // Handle form submission
+  // Future<void> submit() async {
+  //   if (formKey.currentState?.saveAndValidate() ?? false) {
+  //     final String formattedStartTime = DateFormat('HH:mm:ss').format(
+  //       DateTime(0, 1, 1, startTime.value.hour, startTime.value.minute),
+  //     );
+  //
+  //     final String formattedEndTime = DateFormat('HH:mm:ss').format(
+  //       DateTime(0, 1, 1, endTime.value.hour, endTime.value.minute),
+  //     );
+  //     final data = {
+  //       // 'departmentId': departmentId.value,
+  //       // Assuming id is auto-generated or managed by the backend
+  //       'teacherId': teacherId.value, // Example teacher ID, replace with actual ID if needed
+  //       'subjectId': subjectId.value,
+  //       'day': day.value.toUpperCase(), // Convert to uppercase to match your API requirements
+  //       'startTime': formattedStartTime,
+  //       'endTime': formattedEndTime,
+  //       'roomName': roomName.value,
+  //     };
+  //     // get token from AuthService
+  //     final String? token = authService.getToken();
+  //
+  //     // check if token is not null
+  //     if (token != null) {
+  //       // Headers for the API request
+  //       final Map<String, String> headers = {
+  //         'Content-Type': 'application/json',
+  //         'Authorization': token,
+  //       };
+  //       print(data);
+  //       final response = await ApiHelper.post(
+  //         Routinecardapi.addClassEndPoint,
+  //         headers: headers,
+  //         body: data,
+  //
+  //
+  //       );
+  //
+  //
+  //
+  //
+  //     }
+  //
+  //   else {
+  //       Get.snackbar(
+  //         'Error',
+  //         'Please fill all the fields',
+  //         snackPosition: SnackPosition.BOTTOM,
+  //       );
+  //     }
+  //
+  //
+  //   }
+  //
+  //
+  // }
+
+
+
+// Handle form submission
   Future<void> submit() async {
     if (formKey.currentState?.saveAndValidate() ?? false) {
       final String formattedStartTime = DateFormat('HH:mm:ss').format(
@@ -170,6 +229,7 @@ class AddClassController extends GetxController {
       final String formattedEndTime = DateFormat('HH:mm:ss').format(
         DateTime(0, 1, 1, endTime.value.hour, endTime.value.minute),
       );
+
       final data = {
         // 'departmentId': departmentId.value,
         // Assuming id is auto-generated or managed by the backend
@@ -180,57 +240,62 @@ class AddClassController extends GetxController {
         'endTime': formattedEndTime,
         'roomName': roomName.value,
       };
-      // get token from AuthService
+
+      // Get token from AuthService
       final String? token = authService.getToken();
 
-      // check if token is not null
+      // Check if token is not null
       if (token != null) {
         // Headers for the API request
         final Map<String, String> headers = {
           'Content-Type': 'application/json',
           'Authorization': token,
         };
-        print(data);
-        final response = await ApiHelper.post(
-          Routinecardapi.addClassEndPoint,
-          headers: headers,
-          body: data,
 
+        try {
+          final response = await http.post(
+            Uri.parse("https://attendancesystem-s1.onrender.com/api/classRoutine/addClass"),
+            headers: headers,
+            body: json.encode(data),
+          );
 
-        );
-
-          // Get.snackbar(
-          //   'Success',
-          //   'Student added successfully',
-          //   snackPosition: SnackPosition.BOTTOM,
-          // );
-
-// Clear the form fields
-
-
-      }
-
-    else {
+          if (response.statusCode == 201) {
+            // Handle successful response
+            print('Response data: ${response.body}');
+            Get.snackbar(
+              'Success',
+              'Class added successfully',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          } else {
+            // Handle error response
+            print('Error: ${response.statusCode}');
+            print('Response data: ${response.body}');
+            Get.snackbar(
+              'Error',
+              'Failed to add class',
+              snackPosition: SnackPosition.BOTTOM,
+            );
+          }
+        } catch (e) {
+          // Handle exception
+          print('Exception: $e');
+          Get.snackbar(
+            'Error',
+            'An error occurred while adding the class',
+            snackPosition: SnackPosition.BOTTOM,
+          );
+        }
+      } else {
         Get.snackbar(
           'Error',
           'Please fill all the fields',
           snackPosition: SnackPosition.BOTTOM,
         );
       }
-
-
     }
-    // formKey.currentState?.reset();
-    // startTime.value = TimeOfDay.now();
-    // endTime.value = TimeOfDay.now();
-    // roomName.value = '';
-    // teacherId.value = 0;
-    // subjectId.value = 0;
-    // departmentId.value = 0;
-    // day.value = 'MONDAY';
-
-
   }
+
 
 
 }

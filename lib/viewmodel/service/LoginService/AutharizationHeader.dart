@@ -58,7 +58,7 @@ class ApiHelper {
       Get.snackbar("Success", "Data Posted Successfully");
       print('Data posted successfully');
     } else {
-      Get.snackbar("OOps", "Failed to Post Data");
+      // Get.snackbar("OOps", "Failed to Post Data");
       print('Failed to post data, status code: ${response.statusCode}');
     }
   }

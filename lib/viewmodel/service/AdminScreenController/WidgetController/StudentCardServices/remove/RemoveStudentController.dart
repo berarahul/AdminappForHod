@@ -7,6 +7,7 @@ import 'package:attendanceadmin/viewmodel/service/LoginService/AuthServices.dart
 import 'package:attendanceadmin/viewmodel/service/LoginService/AutharizationHeader.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/get_rx.dart';
+import 'package:http/http.dart' as http;
 
 import '../../../../../../model/universalmodel/departmentModel.dart';
 

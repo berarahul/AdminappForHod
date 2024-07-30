@@ -32,8 +32,6 @@ class RemoveStudentModal extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
 
-
-
                 Obx(() {
                   if (controller.departments.isEmpty) {
                     return const CircularProgressIndicator();
@@ -66,24 +64,27 @@ class RemoveStudentModal extends StatelessWidget {
 
                 // Dropdown for selecting semester
                 Obx(() {
-                  return DropdownButton<int>(
-                    alignment: Alignment.center,
-                    hint: const Text('Select Semester'),
-                    borderRadius: BorderRadius.circular(8),
-                    isExpanded: true,
-                    value: controller.selectedSemester.value != 0
-                        ? controller.selectedSemester.value
-                        : null,
-                    onChanged: (newValue) {
-                      controller.selectedSemester.value = newValue!;
-                      controller.fetchStudents(newValue);
-                    },
-                    items: controller.semesters.map((semester) {
-                      return DropdownMenuItem(
+                  return DropdownButtonFormField<int>(
+                    items: controller.semesters
+                        .map((semester) {
+                      return DropdownMenuItem<int>(
                         value: semester,
                         child: Text(semester.toString()),
                       );
                     }).toList(),
+                    onChanged: (newValue) {
+                      if (newValue != null) {
+                        controller.selectedSemester.value = newValue;
+                        controller.fetchStudents(newValue);
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Select Semester',
+                      border: OutlineInputBorder(),
+                    ),
+                    value: controller.selectedSemester.value != 0
+                        ? controller.selectedSemester.value
+                        : null,
                   );
                 }),
                 const SizedBox(height: 20),
@@ -94,27 +95,8 @@ class RemoveStudentModal extends StatelessWidget {
                     return Expanded(
                       child: Column(
                         children: [
-                          // TextField(
-                          //   onChanged: (value) {},
-                          //   decoration: const InputDecoration(
-                          //     labelText: 'Search Students',
-                          //     border: OutlineInputBorder(),
-                          //   ),
-                          // ),
                           const SizedBox(height: 20),
-                          //Todo: Need to impl this
-                          // Row(
-                          //   children: [
-                          //     Checkbox(
-                          //       value: false,
-                          //       onChanged: (value) {
-                          //         controller.selectAllStudents(value!);
-                          //       },
-                          //     ),
-                          //     const Text('Select All'),
-                          //   ],
-                          // ),
-                          // const SizedBox(height: 20),
+
                           Obx(() {
                             return Expanded(
                                 child: controller.students.isEmpty
@@ -141,9 +123,7 @@ class RemoveStudentModal extends StatelessWidget {
                                           });
                                         },
                                       ));
-                          }
-
-                          ),
+                          }),
                           const SizedBox(height: 20),
                           ElevatedButton(
                             onPressed: () async {

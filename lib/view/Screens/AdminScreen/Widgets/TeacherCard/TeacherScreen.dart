@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:attendanceadmin/constant/AppColors.dart';
 import '../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/StudentScreenController.dart';
+import '../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/remove/TeacherremoveController.dart';
 import 'Widgets/AddTeacherWidget.dart';
 import 'Widgets/RemoveTeacherWidget.dart';
 import 'Widgets/UpdateTeacherWidget.dart';
@@ -11,20 +12,14 @@ import 'Widgets/UpdateTeacherWidget.dart';
 
 class TeacherActionsScreen extends StatelessWidget {
   final TeacherController controller = Get.put(TeacherController());
-
+// final RemoveTeacherController removeTeacherController =Get.put(RemoveTeacherController());
   TeacherActionsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true, // Add this line
-      // appBar: AppBar(
-      //   backgroundColor: Colors.transparent,
-      //   elevation: 0,
-      //   shadowColor: Colors.transparent,
-      //   automaticallyImplyLeading: true,
-      //   systemOverlayStyle: SystemUiOverlayStyle.light, // Add this line for light status bar icons
-      // ),
+
       body: Container(
         padding: const EdgeInsets.all(16.0),
         decoration: _buildBackgroundDecoration(),
@@ -98,12 +93,9 @@ class TeacherActionsScreen extends StatelessWidget {
   }
 
   void _handleAction(BuildContext context, String action) {
-    // if (action == 'Add Teacher') {
-    //   controller.addTeacher();
-    //   _showAddStudentModal(context);
-    // }
 
      if (action == 'Remove Teacher') {
+       // removeTeacherController.fetchDepartments();
       controller.removeTeacher();
       _showRemoveStudentModal(context);
     } else if (action == 'Update Teacher') {

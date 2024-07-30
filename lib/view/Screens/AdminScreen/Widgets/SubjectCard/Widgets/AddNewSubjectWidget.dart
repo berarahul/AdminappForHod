@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:dropdown_search/dropdown_search.dart';
 import '../../../../../../constant/AppColors.dart';
 import '../../../../../../model/subjectCard/papperCodeNameModel.dart';
 import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/SubjectsCardService/add/AddNewSubjectController.dart';
-import '../../../../../../viewmodel/service/AdminScreenController/WidgetController/TeacherCardServices/add/TeacherAddController.dart';
+
 
 class AddSubjectModal extends StatelessWidget {
   final AddSubjectController controller = Get.put(AddSubjectController());
@@ -22,7 +21,7 @@ class AddSubjectModal extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             const Text(
-              'Add Subject',
+              'Add New Subject',
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
@@ -74,21 +73,6 @@ class AddSubjectModal extends StatelessWidget {
             }),
 
             const SizedBox(height: 20),
-            // TextField(
-            //   keyboardType: TextInputType.number,
-            //   textInputAction: TextInputAction.next,
-            //   onChanged: (value) {
-            //
-            //     int? intValue = int.tryParse(value);
-            //     // Update the controller's semesterId with the parsed int value
-            //     controller.semesterId.value = intValue;
-            //
-            //   },
-            //   decoration: const InputDecoration(
-            //     labelText: 'Semester id',
-            //     border: OutlineInputBorder(),
-            //   ),
-            // ),
 
 
             DropdownButtonFormField<int>(
@@ -104,7 +88,7 @@ class AddSubjectModal extends StatelessWidget {
                 }
               },
               decoration: const InputDecoration(
-                labelText: 'Semester ID',
+                labelText: 'Semester',
                 border: OutlineInputBorder(),
               ),
               value: controller.semesterId.value == 0
@@ -142,22 +126,19 @@ class AddSubjectModal extends StatelessWidget {
                 );
               }
             }),
-
-
-
-
-
-            const SizedBox(height: 20),
-
-
             const SizedBox(height: 20),
 
             ElevatedButton(
-              onPressed: () async => await controller.submit(),
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.appcolor, // Background color
+                foregroundColor: Colors.white, backgroundColor: Colors.blue, // Set the color of the text here
               ),
-              child: const Text('Submit'),
+              onPressed: () async {
+
+                await controller.submit();
+              },
+
+              child: const Center(child: Text('Submit')),
+
             ),
           ],
         ),

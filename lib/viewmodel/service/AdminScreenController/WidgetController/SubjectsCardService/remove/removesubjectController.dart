@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:attendanceadmin/constant/AppUrl/StudentCard/StudentCardApi.dart';
 import 'package:attendanceadmin/constant/AppUrl/SubjectCard/SubjectCardApi.dart';
 import 'package:attendanceadmin/constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
@@ -9,28 +8,18 @@ import 'package:attendanceadmin/viewmodel/service/LoginService/AuthServices.dart
 import 'package:attendanceadmin/viewmodel/service/LoginService/AutharizationHeader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/get_rx.dart';
 import 'package:get_storage/get_storage.dart';
-
 import '../../../../../../model/universalmodel/departmentModel.dart';
 import '../../../../../../model/subjectCard/subjectsListModel.dart';
 
-// Controller class for removing students, utilizing GetX for state management.
 class RemoveSubjectController extends GetxController {
-  // Instance of the authentication service.
   final AuthService authService = AuthService();
-
   final RxInt departmentId = 0.obs;
-  // Rx<int> selectedSubject = 0.obs;
-
   Rx<Subjectslistmodel?> subjectslistmodel = Subjectslistmodel().obs;
   var departments = <DepartmentModel>[].obs;
   RxList subjects = [].obs;
-
   RxList<int> subjectId = <int>[].obs;
-
   RxList<int> selectedSubject = <int>[].obs;
-
 
   Future<void> fetchDepartments() async {
     try {
@@ -42,7 +31,6 @@ class RemoveSubjectController extends GetxController {
       Get.snackbar('Error', 'Failed to load departments');
     }
   }
-
 
   void setDepartmentId(int department) {
     departmentId.value = department;
@@ -59,7 +47,6 @@ class RemoveSubjectController extends GetxController {
     print("Selected subject: $selectedSubject");
     print("selected department: $departmentId");
   }
-
 
   Future<void> fetchAllSubject() async {
     if (departmentId.value != 0) {
@@ -78,7 +65,6 @@ class RemoveSubjectController extends GetxController {
           subjects.clear();
           subjectId.clear();
 
-          // Corrected the key to "subjects"
           if (bodyDecode.containsKey('subjects')) {
             final List<dynamic> subjectList = bodyDecode['subjects'];
             for (var subject in subjectList) {
@@ -103,41 +89,34 @@ class RemoveSubjectController extends GetxController {
     }
   }
 
-
   Future<void> removeSelectedSubjects() async {
-    if (selectedSubject != null && selectedSubject.isNotEmpty && departmentId != null) {
+    if (selectedSubject.isNotEmpty && departmentId.value != 0) {
       try {
-        // Extract the integer value from the selectedSubject list
-        final subjectId = selectedSubject.value.first;
         final deptId = departmentId.value;
+        for (int subId in selectedSubject) {
+          final url = "${Subjectcardapi.subjectDeleteEndpoint}?deptId=$deptId&subjectId=$subId";
+          print('Request URL: $url');
 
-        print('Selected subject: $subjectId');
-        print('Selected department: $deptId');
+          final headers = await ApiHelper().getHeaders();
+          print('Request Headers: $headers');
 
-        final url = "${Subjectcardapi.subjectDeleteEndpoint}?deptId=$deptId&subjectId=$subjectId";
-        print('Request URL: $url');
+          final response = await ApiHelper.delete(url, headers: headers);
 
-        final headers = await ApiHelper().getHeaders();
-        print('Request Headers: $headers');
+          print('Response Status Code: ${response.statusCode}');
+          print('Response Body: ${response.body}');
 
-        final response = await ApiHelper.delete(
-          url,
-          headers: headers,
-        );
-
-        print('Response Status Code: ${response.statusCode}');
-        print('Response Body: ${response.body}');
-
-        if (response.statusCode == 200) {
-          Get.snackbar("Success", "Selected subject has been removed");
-          print("Removed subject: $selectedSubject");
-
-          // Clear selected subject after successful removal
-          selectedSubject.clear();
-        } else {
-          Get.snackbar('Error', 'Failed to remove subjects: ${response.reasonPhrase}');
-          print('Failed to remove subjects: ${response.reasonPhrase}');
+          if (response.statusCode != 200) {
+            Get.snackbar('Error', 'Failed to remove subject with ID $subId: ${response.reasonPhrase}');
+            print('Failed to remove subject with ID $subId: ${response.reasonPhrase}');
+            return;
+          }
         }
+
+        Get.snackbar("Success", "Selected subjects have been removed");
+        print("Removed subjects: $selectedSubject");
+
+        // Clear selected subjects after successful removal
+        selectedSubject.clear();
       } catch (e) {
         print('Error removing subjects: $e');
         Get.snackbar('Error', 'Failed to remove subjects');
@@ -146,8 +125,6 @@ class RemoveSubjectController extends GetxController {
       Get.snackbar("Something Went Wrong", "Please log out and log in again");
     }
   }
-
-
 
   Future<void> updateList() async {
     subjects.clear();
@@ -160,14 +137,11 @@ class RemoveSubjectController extends GetxController {
   void onInit() {
     super.onInit();
     fetchDepartments();
-
   }
 
-  // Called when the controller is being disposed.
   @override
   void onClose() {
     super.onClose();
-    // Ensures selected students are removed when the controller is disposed.
     removeSelectedSubjects();
   }
 }

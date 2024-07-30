@@ -3,6 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:attendanceadmin/constant/AppColors.dart';
 import '../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/StudentScreenController.dart';
+import '../../../../../viewmodel/service/AdminScreenController/WidgetController/StudentCardServices/add/AddStudentWidgetController.dart';
+
 import 'Widgets/AddStudentWidget.dart';
 import 'Widgets/RemoveStudentFromLastSemWidget.dart';
 import 'Widgets/RemoveStudentWidget.dart';
@@ -11,6 +13,8 @@ import 'Widgets/UpdateStudentWidget.dart';
 
 class StudentActionsScreen extends StatelessWidget {
   final StudentController controller = Get.put(StudentController());
+final AddStudentController addStudentController =Get.put(AddStudentController());
+
 
   StudentActionsScreen({super.key});
 
@@ -93,18 +97,24 @@ class StudentActionsScreen extends StatelessWidget {
 
   void _handleAction(BuildContext context, String action) {
     if (action == 'Add Student') {
+      // addStudentController.fetchDepartments();
       controller.addStudent();
       _showAddStudentModal(context);
     } else if (action == 'Remove Student') {
+      // removeStudentController.fetchDepartments();
       controller.removeStudent();
       _showRemoveStudentModal(context);
     } else if (action == 'Update Student') {
+      // updateStudentController.fetchDepartments();
       controller.updateStudent();
       _showUpdateStudentModal(context);
     } else if (action == 'Remove student from last sem') {
+
+      // removeStudentControllerFromLastSem.fetchDepartments();
       controller.removeStudentFromLastSem();
       _showRemoveStudentFromLastSemModal(context);
     } else if (action == 'Student Transfer') {
+      // semesterController.fetchDepartments();
       controller.semesterAdd();
       _showAddSemesterModal(context);
     }

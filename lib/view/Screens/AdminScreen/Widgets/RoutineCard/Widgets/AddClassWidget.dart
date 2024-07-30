@@ -32,6 +32,7 @@ class AddClassScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: const Text('Add Class'),
       ),
       body: SingleChildScrollView(

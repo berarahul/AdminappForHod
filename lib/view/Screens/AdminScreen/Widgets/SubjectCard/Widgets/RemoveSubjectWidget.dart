@@ -73,61 +73,11 @@ class RemoveSubjectModal extends StatelessWidget {
                     return Expanded(
                       child: Column(
                         children: [
-                          //Todo: Need to impl this
-                          // Row(
-                          //   children: [
-                          //     Checkbox(
-                          //       value: false,
-                          //       onChanged: (value) {
-                          //         controller.selectAllStudents(value!);
-                          //       },
-                          //     ),
-                          //     const Text('Select All'),
-                          //   ],
-                          // ),
-                          // const SizedBox(height: 20),
-                          //
-                          // Obx(() {
-                          //   // Ensure subjectslistmodel.value and subjectslistmodel.value.subjects are not null
-                          //   var subjectsListModel =
-                          //       controller.subjectslistmodel.value;
-                          //   var subjects = subjectsListModel?.subjects ?? [];
-                          //
-                          //   return Expanded(
-                          //     child: subjects.isEmpty
-                          //         ? const Center(
-                          //             child: CircularProgressIndicator())
-                          //         : ListView.builder(
-                          //             itemCount: subjects.length,
-                          //             itemBuilder: (context, index) {
-                          //               var subject = subjects[index];
-                          //
-                          //               return Obx(() => ListTile(
-                          //                     title: Text(subject.subName ??
-                          //                         'Unknown'), // Provide a default value for subName if null
-                          //                     trailing: Checkbox(
-                          //                       value: controller
-                          //                               .selectedSubject
-                          //                               .value ==
-                          //                           subject.paperId,
-                          //                       onChanged: (value) {
-                          //                         controller.addOrRemoveStudent(
-                          //                             index: index);
-                          //                       },
-                          //                     ),
-                          //                   ));
-                          //             },
-                          //           ),
-                          //   );
-                          // }),
-
-
-
                           Obx(() {
                             return Expanded(
                                 child: controller.subjects.isEmpty
                                     ? const Center(
-                                    child: CircularProgressIndicator())
+                                    child: Text("Currently Subjects are not Showing"))
                                     : ListView.builder(
                                   itemCount: controller.subjects.length,
                                   itemBuilder: (context, index) {

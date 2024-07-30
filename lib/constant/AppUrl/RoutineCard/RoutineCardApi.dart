@@ -5,7 +5,7 @@ class Routinecardapi{
   Routinecardapi._();
   static const String baseurl = "https://attendancesystem-s1.onrender.com";
 // For AddClass
-  static const String addClassEndPoint = "classRoutine/addClass";
+  static const String addClassEndPoint = "/api/classRoutine/addClass";
 
   // For UpdateRoutine
 static const String updateRoutine = "classRoutine/updateRoutine";

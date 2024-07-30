@@ -2,11 +2,12 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:http/http.dart' as http;
 import '../../../../../../constant/AppUrl/StudentCard/StudentCardApi.dart';
 import '../../../../../../constant/AppUrl/SubjectCard/SubjectCardApi.dart';
 import '../../../../../../constant/AppUrl/TeacherCard/TeacherCardAPi.dart';
+import '../../../../../../model/TeacherWiseSubjectModel/teacherWiseSubjectModel.dart';
 import '../../../../../../model/login/LoginModel.dart';
 import '../../../../../../model/subjectCard/subjectsListModel.dart';
 import '../../../../../../model/universalmodel/departmentModel.dart';
@@ -24,13 +25,11 @@ class UpdateTeacherController extends GetxController {
   final RxInt departmentId = 0.obs;
   var departments = <DepartmentModel>[].obs;
   var selectedSubjects = <SubjectModel>[].obs;
+  var selectedRemoveSubjects = <TeacherwiseSubjectModel>[].obs;
 
   var subjects = <SubjectModel>[].obs;
-
-  var selectedRemoveSubjects=<SubjectModel>[].obs;
-
-  var subjects2=<SubjectModel>[].obs;
-
+  var subjects2 = <TeacherwiseSubjectModel>[].obs;
+  final GetStorage storage = GetStorage();
   @override
   void onInit() {
     getDepartmentId();
@@ -62,17 +61,15 @@ class UpdateTeacherController extends GetxController {
     }
   }
 
-
   Future<void> secondtimefetchsubjects() async {
     try {
-      var fetchsubjects = await SecondTimefetchSubjects();
-      subjects.assignAll(fetchsubjects);
+      var fetchsubjects = await FetchSubjectforRemove();
+      subjects2.assignAll(fetchsubjects as Iterable<TeacherwiseSubjectModel>);
     } catch (e) {
       print("Error fetching subjects: $e");
       Get.snackbar('Error', e.toString());
     }
   }
-
 
   FutureOr<void> getDepartmentId() async {
     final UserModel? userModel = authService.getUserModel();
@@ -120,29 +117,23 @@ class UpdateTeacherController extends GetxController {
     }
   }
 
-
-
-
-  Future<List<SubjectModel>> SecondTimefetchSubjects() async {
+  Future<List<TeacherwiseSubjectModel>> FetchSubjectforRemove() async {
     try {
       final headers = await ApiHelper().getHeaders();
       print('Department ID set to: $departmentId');
-
-      final url = "https://attendancesystem-s1.onrender.com/api/${StudentCardApi.departmentListEndPoint}/${Subjectcardapi.subjectEndPoint}/$departmentId";
+      int? selectedteacherid = retrieveSelectedTeacherId();
+      final url = "https://attendancesystem-s1.onrender.com/api/teacher/$selectedteacherid/$departmentId";
       print('Fetching subjects from URL: $url with headers: $headers');
 
       final response = await http.get(Uri.parse(url), headers: headers);
 
       if (response.statusCode == 200) {
-        Map<String, dynamic> jsonData = jsonDecode(response.body);
+        // Assuming the response is a list of subjects, not a map
+        List<dynamic> jsonData = jsonDecode(response.body);
         print('Response data: $jsonData');
 
-        List<dynamic> subjectsList = jsonData['subjects'];
-        if (subjectsList == null) {
-          throw Exception('Subjects list is null');
-        }
-
-        return subjectsList.map((item) => SubjectModel.fromJson(item)).toList();
+        // Ensure that jsonData is a list and map each item to TeacherwiseSubjectModel
+        return jsonData.map((item) => TeacherwiseSubjectModel.fromJson(item)).toList();
       } else {
         print('Failed to load subjects: ${response.body}');
         throw Exception('Failed to load subjects: ${response.body}');
@@ -152,8 +143,6 @@ class UpdateTeacherController extends GetxController {
       throw Exception('Error fetching subjects: $e');
     }
   }
-
-
 
 
   FutureOr<void> fetchAllTeacher() async {
@@ -178,40 +167,144 @@ class UpdateTeacherController extends GetxController {
     }
   }
 
-  FutureOr<void> updatedTeacher() async {
+
+
+  FutureOr<void> updateTeacherWithSubjects() async {
     if (departmentId.value != null) {
+      final requestBody = {
+        "teacherId": int.parse(teacherIdController.text),
+        "name": nameController.text,
+        "newSubjectIds": selectedSubjects.map((subject) => subject.id).toList(),
+      };
+
+      print('Request Body: $requestBody');
+
       final data = await ApiHelper.update(
         Teachercardapi.updateTeacherEndPoint,
         headers: await ApiHelper().getHeaders(),
-        body: {
-          "teacherId": int.parse(teacherIdController.text),
-          "name": nameController.text,
-          "newSubjectIds": selectedSubjects.map((subject) => subject.id).toList(),
-          "removeSubjectIds":selectedSubjects.map((subject) => subject.id).toList(),
-        },
+        body: requestBody,
       );
 
       if (data.statusCode == 200) {
-        Get.snackbar('Success', 'Teacher updated successfully');
 
-        nameController.clear();
-        teacherIdController.clear();
-        teacherList.clear();
-        teacherId.clear();
-
-        await fetchAllTeacher();
-        Get.back();
+        _clearAllFields();
       } else {
         Get.snackbar('Error', 'Failed to update Teacher');
         print('Failed to update Teacher. Response: ${data.body}');
       }
     }
   }
-  void clearSelectedSubjects(){
-    selectedSubjects.clear();
+
+
+
+
+  FutureOr<void> updateTeacherWithoutSubjects() async {
+    if (departmentId.value != null) {
+      String teacherIdText = teacherIdController.text;
+
+      // Check if teacherIdText is not empty and can be parsed to an integer
+      if (teacherIdText.isEmpty) {
+        Get.snackbar('Error', 'Teacher ID cannot be empty');
+        return;
+      }
+
+      int teacherId;
+      try {
+        teacherId = int.parse(teacherIdText);
+      } catch (e) {
+        Get.snackbar('Error', 'Invalid Teacher ID');
+        print('Error parsing Teacher ID: $e');
+        return;
+      }
+
+      final requestBody = {
+        "teacherId": teacherId,
+        "name": nameController.text,
+        "removeSubjectIds": selectedRemoveSubjects.map((subject) => subject.subjectId).toList(),
+      };
+
+      print('Request Body: $requestBody');
+
+      // Define the URL for updating the teacher
+      final url = "https://attendancesystem-s1.onrender.com/api/hod/teacher/updateTeacher"; // Replace with your actual endpoint
+
+      try {
+        // Perform the PUT request
+        final response = await http.put(
+          Uri.parse(url),
+          headers: await ApiHelper().getHeaders(),
+          body: jsonEncode(requestBody),
+        );
+
+        if (response.statusCode == 200) {
+          Get.snackbar("Success", "Subject Removed Successfully");
+          _clearAllFields();
+        } else {
+          Get.snackbar('Error', 'Failed to update Teacher');
+          print('Failed to update Teacher. Response: ${response.body}');
+        }
+      } catch (e) {
+        Get.snackbar('Error', 'An error occurred: $e');
+        print('Error: $e');
+      }
+    }
   }
 
-  void clearselectedRemoveSubjects(){
+
+
+  Future<void> updateTeacherNameOnly() async {
+    final requestBody = {
+      "teacherId": int.parse(teacherIdController.text),
+      "name": nameController.text,
+    };
+
+    print('Request Body for Name Update: $requestBody');
+
+    final response = await http.put(
+      Uri.parse('https://attendancesystem-s1.onrender.com/api/hod/teacher/updateTeacher'), // Replace with your actual endpoint
+      headers: await ApiHelper().getHeaders(),
+      body: jsonEncode(requestBody),
+    );
+
+    if (response.statusCode == 200) {
+      Get.snackbar("Success", "Teacher Name Updated Successfully");
+      _clearAllFields();
+    } else {
+      Get.snackbar('Error', 'Failed to update Teacher Name');
+      print('Failed to update Teacher Name. Response: ${response.body}');
+    }
+  }
+
+
+
+  void _clearAllFields() {
+    nameController.clear();
+    teacherIdController.clear();
+    teacherList.clear();
+    teacherId.clear();
+    selectedSubjects.clear();
     selectedRemoveSubjects.clear();
+    fetchAllTeacher();
+    Get.back();
+  }
+
+  void clearSelectedSubjects() {
+    print(selectedSubjects);
+    selectedSubjects.clear();
+    print(selectedSubjects);
+  }
+
+  void clearSelectedRemoveSubjects() {
+    print(selectedRemoveSubjects);
+    selectedRemoveSubjects.clear();
+    print(selectedRemoveSubjects);
+  }
+  void storeSelectedTeacherId(int id) {
+    storage.write('selectedTeacherId', id);
+    print("Selected Teacher ID stored: $id");
+  }
+
+  int? retrieveSelectedTeacherId() {
+    return storage.read('selectedTeacherId');
   }
 }

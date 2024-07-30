@@ -14,10 +14,7 @@ class UpdateStudentModal extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-      EdgeInsets.only(bottom: MediaQuery
-          .of(context)
-          .viewInsets
-          .bottom),
+          EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
       child: Container(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -32,30 +29,14 @@ class UpdateStudentModal extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 20),
-            // Obx(() => DropdownButton<int>(
-            //       hint: controller.departmentIdList.isEmpty
-            //           ? const Text('Loading...')
-            //           : const Text('Select Department'),
-            //       value: controller.selectedDepartment.value,
-            //       onChanged: (newValue) {
-            //         controller.selectedDepartment.value = newValue;
-            //       },
-            //       items: controller.departmentIdList.map((department) {
-            //         return DropdownMenuItem(
-            //           value: department,
-            //           child: Text(department.toString()),
-            //         );
-            //       }).toList(),
-            //     )),
-
 
             Obx(() {
               if (controller.departments.isEmpty) {
                 return const CircularProgressIndicator();
               } else {
                 return DropdownButtonFormField<int>(
-                  items: controller.departments.map((
-                      DepartmentModel department) {
+                  items:
+                      controller.departments.map((DepartmentModel department) {
                     return DropdownMenuItem<int>(
                       value: department.id,
                       child: Text(department.departmentName),
@@ -80,81 +61,63 @@ class UpdateStudentModal extends StatelessWidget {
             const SizedBox(height: 20),
 
 
-            // Obx(() => DropdownButton<int>(
-            //       hint: const Text('Select Semester'),
-            //       value: controller.selectedSemester.value,
-            //       onChanged: (newValue) async {
-            //         controller.selectedSemester.value = newValue;
-            //
-            //         await controller.fetchAllStudent();
-            //       },
-            //       items: controller.semestersList.map((semester) {
-            //         return DropdownMenuItem(
-            //           value: semester,
-            //           child: Text(semester.toString()),
-            //         );
-            //       }).toList(),
-            //     )),
-            //
-
 
             Obx(() {
-              return DropdownButton<int>(
-                alignment: Alignment.center,
-                hint: const Text('Select Semester'),
-                borderRadius: BorderRadius.circular(8),
-                isExpanded: true,
-                value: controller.selectedSemester.value != 0
-                    ? controller.selectedSemester.value
-                    : null,
-                onChanged: (newValue) {
-                  controller.selectedSemester.value = newValue!;
-                  print(newValue);
-                  controller.fetchStudents(newValue);
-                },
-                items: controller.semestersList.map((semester) {
-                  return DropdownMenuItem(
+              return DropdownButtonFormField<int>(
+                items: controller.semestersList
+                    .map((semester) {
+                  return DropdownMenuItem<int>(
                     value: semester,
                     child: Text(semester.toString()),
                   );
                 }).toList(),
+                onChanged: (newValue) {
+                  if (newValue != null) {
+                    controller.selectedSemester.value = newValue;
+                    print(newValue);
+                    controller.fetchStudents(newValue);
+                  }
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Select Semester',
+                  border: OutlineInputBorder(),
+                ),
+                value: controller.selectedSemester.value != 0
+                    ? controller.selectedSemester.value
+                    : null,
               );
             }),
 
-
             const SizedBox(height: 20),
-  //
+            //
             Obx(() => controller.departmentId.value != null &&
-                controller.selectedSemester.value != null ?
-            Expanded(
-              child: Obx(() {
-                print("i am inside the obx");
-                if (controller.studentsList.isEmpty) {
-                  return const Center(child: Text('No students found'));
-                } else {
-                   print("hi i am here");
-                    return ListView.builder(
-                      itemCount: controller.studentsList.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(controller.studentsList[index]),
-                          subtitle: Text(
-                              'Roll Number: ${controller
-                                  .studentRollNumber[index]}'
-                          ),
-                          trailing: IconButton(
-                            icon: const Icon(Icons.edit),
-                            onPressed: () {
-                              _showEditStudentModal(context, index);
-                            },
-                          ),
+                    controller.selectedSemester.value != null
+                ? Expanded(
+                    child: Obx(() {
+                      print("i am inside the obx");
+                      if (controller.studentsList.isEmpty) {
+                        return const Center(child: Text('No students found'));
+                      } else {
+                        print("hi i am here");
+                        return ListView.builder(
+                          itemCount: controller.studentsList.length,
+                          itemBuilder: (context, index) {
+                            return ListTile(
+                              title: Text(controller.studentsList[index]),
+                              subtitle: Text(
+                                  'Roll Number: ${controller.studentRollNumber[index]}'),
+                              trailing: IconButton(
+                                icon: const Icon(Icons.edit),
+                                onPressed: () {
+                                  _showEditStudentModal(context, index);
+                                },
+                              ),
+                            );
+                          },
                         );
-                      },
-                    );
-
-                }
-              }),
-            )
+                      }
+                    }),
+                  )
                 : const SizedBox.shrink())
           ],
         ),
@@ -162,22 +125,15 @@ class UpdateStudentModal extends StatelessWidget {
     );
   }
 
-
-
-
   void _showEditStudentModal(BuildContext context, int index) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) =>
-          Padding(
-            padding:
-            EdgeInsets.only(bottom: MediaQuery
-                .of(context)
-                .viewInsets
-                .bottom),
-            child: EditStudentModal(index: index),
-          ),
+      builder: (context) => Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.of(context).viewInsets.bottom),
+        child: EditStudentModal(index: index),
+      ),
     );
   }
 }
@@ -223,6 +179,7 @@ class _EditStudentModalState extends State<EditStudentModal> {
           ),
           const SizedBox(height: 20),
           TextField(
+            enabled: false,
             controller: controller.departmentController,
             decoration: const InputDecoration(
               labelText: 'Department ID',
@@ -231,6 +188,7 @@ class _EditStudentModalState extends State<EditStudentModal> {
           ),
           const SizedBox(height: 20),
           TextField(
+            enabled: false,
             controller: controller.semesterController,
             decoration: const InputDecoration(
               labelText: 'Semester ID',
@@ -248,6 +206,7 @@ class _EditStudentModalState extends State<EditStudentModal> {
           const SizedBox(height: 20),
           // Textform field for roll number
           TextField(
+            enabled: false,
             controller: controller.rollController,
             decoration: const InputDecoration(
               labelText: 'Roll Number',
@@ -258,10 +217,13 @@ class _EditStudentModalState extends State<EditStudentModal> {
           const SizedBox(height: 20),
 
           ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              foregroundColor: Colors.white, backgroundColor: Colors.blue, // Set the color of the text here
+            ),
             onPressed: () async {
               await controller.updatedStudent();
             },
-            child: const Text('Save'),
+            child: const Center(child: Text('Save',style: TextStyle(color: Colors.white),)),
           ),
         ],
       ),
