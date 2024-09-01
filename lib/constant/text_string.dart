@@ -2,8 +2,6 @@ class RTexts{
 
   // -- GLOBAL TEXTS
 
-
-
   // ONBOARDING TEXTS
   static const String onBoardingTitle1="Manage your student attendance easily";
   static const String onBoardingTitle2="Marking attendance is easy.";
@@ -18,7 +16,7 @@ class RTexts{
   static const String homeAppbarTitle="Good Day for Attendance";
   static const String homeAppBarSubTitle="Rahul Bera";
   // For Login
-  static const String loginTitle="Welcome HOD";
+static const String loginTitle="Welcome HOD";
   static const String loginSubTitle="Hello sir, Now You can control your Department";
   static const String username="Username";
   static const String password="Password";
