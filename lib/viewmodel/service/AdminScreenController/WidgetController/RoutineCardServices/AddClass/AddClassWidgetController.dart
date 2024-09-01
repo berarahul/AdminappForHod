@@ -159,63 +159,6 @@ class AddClassController extends GetxController {
     print("Selected Teacher ID: $teacherId");
   }
 
-  // Handle form submission
-  // Future<void> submit() async {
-  //   if (formKey.currentState?.saveAndValidate() ?? false) {
-  //     final String formattedStartTime = DateFormat('HH:mm:ss').format(
-  //       DateTime(0, 1, 1, startTime.value.hour, startTime.value.minute),
-  //     );
-  //
-  //     final String formattedEndTime = DateFormat('HH:mm:ss').format(
-  //       DateTime(0, 1, 1, endTime.value.hour, endTime.value.minute),
-  //     );
-  //     final data = {
-  //       // 'departmentId': departmentId.value,
-  //       // Assuming id is auto-generated or managed by the backend
-  //       'teacherId': teacherId.value, // Example teacher ID, replace with actual ID if needed
-  //       'subjectId': subjectId.value,
-  //       'day': day.value.toUpperCase(), // Convert to uppercase to match your API requirements
-  //       'startTime': formattedStartTime,
-  //       'endTime': formattedEndTime,
-  //       'roomName': roomName.value,
-  //     };
-  //     // get token from AuthService
-  //     final String? token = authService.getToken();
-  //
-  //     // check if token is not null
-  //     if (token != null) {
-  //       // Headers for the API request
-  //       final Map<String, String> headers = {
-  //         'Content-Type': 'application/json',
-  //         'Authorization': token,
-  //       };
-  //       print(data);
-  //       final response = await ApiHelper.post(
-  //         Routinecardapi.addClassEndPoint,
-  //         headers: headers,
-  //         body: data,
-  //
-  //
-  //       );
-  //
-  //
-  //
-  //
-  //     }
-  //
-  //   else {
-  //       Get.snackbar(
-  //         'Error',
-  //         'Please fill all the fields',
-  //         snackPosition: SnackPosition.BOTTOM,
-  //       );
-  //     }
-  //
-  //
-  //   }
-  //
-  //
-  // }
 
 
 
